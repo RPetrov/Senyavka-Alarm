@@ -18,10 +18,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.TimePicker
 import butterknife.bindView
-import rpetrov.senyavkaspeakingalarmclock.providers.CurrencyProvider
-import rpetrov.senyavkaspeakingalarmclock.providers.CurrentTimeProvider
-import rpetrov.senyavkaspeakingalarmclock.providers.NowDateProvider
-import rpetrov.senyavkaspeakingalarmclock.providers.ProviderBuildTask
+import rpetrov.senyavkaspeakingalarmclock.providers.*
 import rpetrov.senyavkaspeakingalarmclock.providers.weather.WeatherProvider
 import java.util.*
 
@@ -50,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
-        val texts = ProviderBuildTask().execute(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(this), CurrencyProvider())
+        val texts = ProviderBuildTask().execute(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(this), CurrencyProvider(), CalendarProvider(this))
 
     }
 
@@ -61,6 +58,15 @@ class MainActivity : AppCompatActivity() {
 
             ActivityCompat.requestPermissions(this,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    0)
+        }
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.READ_CALENDAR),
                     0)
         }
     }

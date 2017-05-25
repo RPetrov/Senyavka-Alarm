@@ -31,7 +31,7 @@ class CurrencyProvider : IProvider {
 
         var text: String = "Курс доллара " + r + " "  + Utils.getCorrectWordForDigit(res.rates.RUB.toDouble().toInt(), " рубль", " рубля", " рублей", " рублей")
         text += ". " + (k) + Utils.getCorrectWordForDigit((res.rates.RUB.toDouble() - res.rates.RUB.toDouble().toInt()*100).toInt(),
-                " копейка", " копейки", " копеек", " копейки")
+                " копейка", " копейки", " копеек", " копеек")
 
         return text
     }
