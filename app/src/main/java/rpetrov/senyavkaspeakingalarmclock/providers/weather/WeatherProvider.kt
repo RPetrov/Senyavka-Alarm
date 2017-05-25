@@ -8,8 +8,8 @@ import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import rpetrov.senyavkaspeakingalarmclock.providers.IProvider
+import rpetrov.senyavkaspeakingalarmclock.providers.Utils
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -18,7 +18,7 @@ import java.io.InputStreamReader
  */
 
 
-const val URL: String = "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&APPID=74e5ddb61377cec9465df223711dddce&lang=ru"
+const val URL: String = "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&APPID=74e5ddb61377cec9465df223711dddce&lang=ru&units=metric"
 
 class WeatherProvider : IProvider {
 
@@ -72,26 +72,42 @@ class WeatherProvider : IProvider {
 
         mGoogleApiClient.connect()
 
-        synchronized(lock){
+        synchronized(lock) {
             lock.wait()
         }
 
 
-        return true // todo
+        return result != null
     }
 
 
-    private fun getWeatherByLocation(location: Location)  {
+    private fun getWeatherByLocation(location: Location) {
 
         Thread(Runnable {
             val gson: Gson = Gson()
-            result= gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, location.latitude, location.longitude)).openStream())), Result::class.java)
-            lock.notifyAll()
+            result = gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, location.latitude, location.longitude)).openStream())), Result::class.java)
+
+            synchronized(lock) {
+                lock.notifyAll()
+            }
         }).start()
 
     }
 
     override fun getText(): String {
-        return ""
+
+        val res = result!!
+
+        var text: String = "Сейчас " + res.main.temp.toInt() + " " + Utils.getCorrectWordForDigit(res.main.temp.toInt(), " градус", " градуса", " градусов", " градусов") +  ". "
+
+        text+= " " + result?.weather?.first()?.description + ". "
+
+        if(res.wind != null){
+            val windVar:Wind = res.wind
+            text+= " Скорость ветра " + windVar.speed + Utils.getCorrectWordForDigit(windVar.speed, " метр", " метра", " метров", " метров") + " в секунду."
+        }
+
+        return text
+
     }
 }
