@@ -6,20 +6,22 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.TimePicker
 import butterknife.bindView
-import rpetrov.senyavkaspeakingalarmclock.providers.*
-import rpetrov.senyavkaspeakingalarmclock.providers.weather.WeatherProvider
 import java.util.*
 
 
@@ -28,6 +30,11 @@ class MainActivity : AppCompatActivity() {
 
     val toolbar: Toolbar by bindView(R.id.toolbar)
     val time: TextView by bindView(R.id.time)
+    val enableAlarm: SwitchCompat by bindView(R.id.enable_alarm)
+
+
+    var hours: Int = 0
+    var minutes: Int = 0
 
     val state: State? = null
 
@@ -47,8 +54,18 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
-        val texts = ProviderBuildTask().execute(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(this), CurrencyProvider(), CalendarProvider(this))
+    }
 
+    override fun onResume() {
+        super.onResume()
+
+        val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        hours = sp.getInt("hours", 9)
+        minutes = sp.getInt("minutes", 0)
+
+        time.text = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes)
+
+        enableAlarm.isChecked = sp.getBoolean("enableAlarm.isChecked", false)
     }
 
     private fun checkPermissions() {
@@ -99,8 +116,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
         time.text = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute)
+        this.hours = hourOfDay
+        this.minutes = minute
 
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (enableAlarm.isChecked) {
+            setUpAlarm(hours, minutes)
+        } else {
+            cancelAlarm()
+        }
+
+        val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sp.edit().putInt("hours", hours).apply()
+        sp.edit().putInt("minutes", minutes).apply()
+        sp.edit().putBoolean("enableAlarm.isChecked", enableAlarm.isChecked).apply()
+    }
+
+
+    private fun cancelAlarm() {
+        val i = Intent(this, AlarmBroadcastReceiver::class.java)
+        val pi = PendingIntent.getBroadcast(this, 0, i, 0)
+
+        val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(pi)
     }
 
     fun setUpAlarm(hourOfDay: Int, minute: Int): Unit {
@@ -114,11 +156,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         val i = Intent(this, AlarmBroadcastReceiver::class.java)
-        val pi = PendingIntent.getBroadcast(this, 0, i, 0)
+        val pi = PendingIntent.getBroadcast(this, 7, i, 0)
 
 
         val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+      //  alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, pi)
     }
 
 

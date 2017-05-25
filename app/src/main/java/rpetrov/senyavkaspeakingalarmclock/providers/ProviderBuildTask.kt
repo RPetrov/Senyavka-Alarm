@@ -11,7 +11,12 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
     constructor() : super()
 
     override fun doInBackground(vararg providers: IProvider): List<String> =
-            providers.filter { it.prepare() }.map { it.getText() }
+            providers.filter { try {
+                return@filter it.prepare()
+            } catch(e: Exception) {
+                return@filter false
+            }
+            }.map { it.getText() }
 
 
     override fun onPostExecute(result: List<String>?) {
