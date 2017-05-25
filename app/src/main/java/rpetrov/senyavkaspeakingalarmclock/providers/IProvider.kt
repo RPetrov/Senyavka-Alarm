@@ -12,7 +12,6 @@ package rpetrov.senyavkaspeakingalarmclock.providers
  * Погода
  * Курс доллара
  * Событий на сегодня
- * Новые письма
  *
  *
  *
