@@ -18,6 +18,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.TimePicker
 import butterknife.bindView
+import rpetrov.senyavkaspeakingalarmclock.providers.CurrencyProvider
 import rpetrov.senyavkaspeakingalarmclock.providers.CurrentTimeProvider
 import rpetrov.senyavkaspeakingalarmclock.providers.NowDateProvider
 import rpetrov.senyavkaspeakingalarmclock.providers.ProviderBuildTask
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
-        val texts = ProviderBuildTask().execute(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(this))
+        val texts = ProviderBuildTask().execute(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(this), CurrencyProvider())
 
     }
 
