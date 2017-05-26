@@ -60,11 +60,13 @@ class WeatherProvider : IProvider {
                                     override fun onLocationChanged(p0: Location?) {
                                         if(p0 != null)
                                             getWeatherByLocation(p0)
-                                        else {
-                                            synchronized(lock) {
-                                                lock.notifyAll()
-                                            }
+                                        else{
+                                            val loc = Location("MY_LOC")
+                                            loc.latitude = 59.932847
+                                            loc.longitude = 30.269849
+                                            getWeatherByLocation(loc)
                                         }
+
 
                                         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
                                     }
