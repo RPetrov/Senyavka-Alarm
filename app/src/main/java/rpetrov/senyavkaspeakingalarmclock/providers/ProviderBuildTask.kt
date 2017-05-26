@@ -1,12 +1,21 @@
 package rpetrov.senyavkaspeakingalarmclock.providers
 
+import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
+import android.os.Handler
 import android.os.Vibrator
+import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import java.util.*
+import android.media.AudioManager
+
+
+
 
 /**
  * Created by Roman Petrov
@@ -15,6 +24,7 @@ import java.util.*
 class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
 
     private val context: Context
+
     constructor(context: Context) : super() {
         this.context = context
     }
@@ -22,14 +32,13 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
     private var tts: TextToSpeech? = null
 
 
-
-
     override fun doInBackground(vararg providers: IProvider): List<String> =
-            providers.filter { try {
-                return@filter it.prepare()
-            } catch(e: Exception) {
-                return@filter false
-            }
+            providers.filter {
+                try {
+                    return@filter it.prepare()
+                } catch(e: Exception) {
+                    return@filter false
+                }
             }.map { it.getText() }
 
 
@@ -37,32 +46,67 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
 
         // Vibrate for 500 milliseconds
         val vibrator = context.getSystemService(AppCompatActivity.VIBRATOR_SERVICE)
-        if(vibrator is Vibrator){
-            vibrator.vibrate(longArrayOf(500, 500, 500, 500, 500, 500, 500, 500, 1000), 1)
+        if (vibrator is Vibrator) {
+            vibrator.vibrate(longArrayOf(700, 300, 700, 300, 700, 300, 700, 300, 700, 1500), -1)
         }
 
         val items = result
 
-        tts = TextToSpeech(context, object: TextToSpeech.OnInitListener {
-            override fun onInit(status: Int) {
-                if (status == TextToSpeech.SUCCESS) {
+        Handler().postDelayed({
+            tts = TextToSpeech(context, object : TextToSpeech.OnInitListener {
+                override fun onInit(status: Int) {
+                    if (status == TextToSpeech.SUCCESS) {
 
-                    val locale = Locale("ru")
+                        val locale = Locale("ru")
 
-                    val result = tts?.setLanguage(locale)
+                        val result = tts?.setLanguage(locale)
 
-                    for(item in items){
-                        tts?.speak(item, TextToSpeech.QUEUE_ADD, null)
+                        tts?.setOnUtteranceProgressListener(object: UtteranceProgressListener() {
+                            override fun onDone(utteranceId: String?) {
+                                playSearchArtist("Ленинград2")
+                            }
+
+                            override fun onError(utteranceId: String) {
+                                System.currentTimeMillis();
+                            }
+
+                            override fun onStart(utteranceId: String) {
+                                System.currentTimeMillis();
+                            }
+
+                        })
+
+                        for (i in 0..items.size - 1) {
+                            val myHashAlarm = HashMap<String, String>()
+                            myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_ALARM.toString())
+                            if(i == items.size - 1)
+                                myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "LAST MESSAGE!")
+                            tts?.speak(items[i], TextToSpeech.QUEUE_ADD, myHashAlarm)
+                        }
+
+                    } else {
+                        Log.e("TTS", "Ошибка!")
                     }
-
-                } else {
-                    Log.e("TTS", "Ошибка!")
                 }
-            }
-        })
+            })
+
+
+        }, 6000)
+
     }
 
-    fun cancel(){
+    fun playSearchArtist(artist: String) {
+        val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
+        intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS,
+                MediaStore.Audio.Artists.ENTRY_CONTENT_TYPE)
+        intent.putExtra(MediaStore.EXTRA_MEDIA_PLAYLIST, artist)
+        intent.putExtra(SearchManager.QUERY, artist)
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent)
+        }
+    }
+
+    fun cancel() {
 
         tts?.stop()
 
