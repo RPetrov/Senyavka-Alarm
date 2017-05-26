@@ -4,6 +4,8 @@ import android.provider.CalendarContract
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.icu.util.ULocale
+import com.ibm.icu.text.RuleBasedNumberFormat
 import java.util.*
 
 
@@ -48,6 +50,10 @@ class CalendarProvider : IProvider{
     }
 
     override fun getText(): String {
+
+        val ruleBasedNumberFormat = RuleBasedNumberFormat(Locale("ru"), RuleBasedNumberFormat.SPELLOUT)
+
+
         return "На сегодня заплонировано " + count + Utils.getCorrectWordForDigit(count, " событие", " события", " событий", " событий")
     }
 }

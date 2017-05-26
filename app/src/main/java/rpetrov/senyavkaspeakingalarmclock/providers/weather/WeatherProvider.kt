@@ -8,10 +8,12 @@ import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
+import com.ibm.icu.text.RuleBasedNumberFormat
 import rpetrov.senyavkaspeakingalarmclock.providers.IProvider
 import rpetrov.senyavkaspeakingalarmclock.providers.Utils
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.util.*
 
 /**
  * Created by Roman Petrov
@@ -121,7 +123,9 @@ class WeatherProvider : IProvider {
 
         if(res.wind != null){
             val windVar:Wind = res.wind
-            text+= " Скорость ветра " + windVar.speed + Utils.getCorrectWordForDigit(windVar.speed, " метр", " метра", " метров", " метров") + " в секунду."
+
+            val ruleBasedNumberFormat = RuleBasedNumberFormat(Locale("ru"), RuleBasedNumberFormat.SPELLOUT)
+            text+= " Скорость ветра " + ruleBasedNumberFormat.format(windVar.speed) + Utils.getCorrectWordForDigit(windVar.speed, " метр", " метра", " метров", " метров") + " в секунду."
         }
 
         return text

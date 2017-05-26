@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
         sp.edit().putInt("minutes", minutes).apply()
         sp.edit().putBoolean("enableAlarm.isChecked", enableAlarm.isChecked).apply()
         sp.edit().putBoolean("checkBoxMusic.isChecked", checkBoxMusic.isChecked).apply()
-        sp.edit().putString("playlist", if (checkBoxMusic.isChecked) {playlist.text.toString()} else null).apply()
+        sp.edit().putString("playlist", playlist.text.toString()).apply()
     }
 
 
