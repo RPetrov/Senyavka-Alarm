@@ -24,9 +24,13 @@ import android.preference.PreferenceManager
 class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
 
     private val context: Context
+    private val vibrator: Vibrator
+
+    private var cancel: Boolean = false
 
     constructor(context: Context) : super() {
         this.context = context
+        vibrator = context.getSystemService(AppCompatActivity.VIBRATOR_SERVICE) as Vibrator
     }
 
     private var tts: TextToSpeech? = null
@@ -44,17 +48,21 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
 
     override fun onPostExecute(result: List<String>) {
 
-        // Vibrate for 500 milliseconds
-        val vibrator = context.getSystemService(AppCompatActivity.VIBRATOR_SERVICE)
-        if (vibrator is Vibrator) {
-            vibrator.vibrate(longArrayOf(700, 300, 700, 300, 700, 300, 700, 300, 700, 1500), -1)
-        }
+        if(cancel) return
+
+        vibrator.vibrate(longArrayOf(700, 300, 700, 300, 700, 300, 700, 300, 700, 1500), -1)
 
         val items = result
 
         Handler().postDelayed({
+
+
+
             tts = TextToSpeech(context, object : TextToSpeech.OnInitListener {
                 override fun onInit(status: Int) {
+
+                    if(cancel) return
+
                     if (status == TextToSpeech.SUCCESS) {
 
                         val locale = Locale("ru")
@@ -63,7 +71,10 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
 
                         tts?.setOnUtteranceProgressListener(object: UtteranceProgressListener() {
                             override fun onDone(utteranceId: String?) {
-                                val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+                                if(cancel) return
+
+                                val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                                 playSearchArtist(sp.getString("playlist", null))
                             }
 
@@ -111,7 +122,8 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
     }
 
     fun cancel() {
-
+        cancel = true
+        vibrator.cancel()
         tts?.stop()
 
     }

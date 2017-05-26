@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.TimePicker
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     val time: TextView by bindView(R.id.time)
     val enableAlarm: SwitchCompat by bindView(R.id.enable_alarm)
     val playlist: EditText by bindView(R.id.text_playlist)
+    val checkBoxMusic: CheckBox by bindView(R.id.checkBoxMusic)
 
 
     var hours: Int = 0
@@ -136,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         sp.edit().putInt("hours", hours).apply()
         sp.edit().putInt("minutes", minutes).apply()
         sp.edit().putBoolean("enableAlarm.isChecked", enableAlarm.isChecked).apply()
-        sp.edit().putString("playlist", playlist.text.toString()).apply()
+        sp.edit().putString("playlist", if (checkBoxMusic.isChecked) {playlist.text.toString()} else null).apply()
     }
 
 
