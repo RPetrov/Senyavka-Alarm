@@ -1,6 +1,5 @@
 package rpetrov.senyavkaspeakingalarmclock
 
-import android.app.TimePickerDialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -8,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import rpetrov.senyavkaspeakingalarmclock.providers.*
 import rpetrov.senyavkaspeakingalarmclock.providers.weather.WeatherProvider
-import java.util.*
 
 
 class AlarmActivity : AppCompatActivity() {
