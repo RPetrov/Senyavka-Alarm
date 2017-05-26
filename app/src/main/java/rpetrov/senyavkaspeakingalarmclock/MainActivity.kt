@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.TimePicker
 import butterknife.bindView
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     val toolbar: Toolbar by bindView(R.id.toolbar)
     val time: TextView by bindView(R.id.time)
     val enableAlarm: SwitchCompat by bindView(R.id.enable_alarm)
+    val playlist: EditText by bindView(R.id.text_playlist)
 
 
     var hours: Int = 0
@@ -65,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         time.text = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes)
 
         enableAlarm.isChecked = sp.getBoolean("enableAlarm.isChecked", false)
+        playlist.setText(sp.getString("playlist", null))
     }
 
     private fun checkPermissions() {
@@ -133,6 +136,7 @@ class MainActivity : AppCompatActivity() {
         sp.edit().putInt("hours", hours).apply()
         sp.edit().putInt("minutes", minutes).apply()
         sp.edit().putBoolean("enableAlarm.isChecked", enableAlarm.isChecked).apply()
+        sp.edit().putString("playlist", playlist.text.toString()).apply()
     }
 
 

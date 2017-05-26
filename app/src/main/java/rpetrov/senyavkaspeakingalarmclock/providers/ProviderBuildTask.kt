@@ -3,6 +3,7 @@ package rpetrov.senyavkaspeakingalarmclock.providers
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Vibrator
@@ -13,8 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import java.util.*
 import android.media.AudioManager
-
-
+import android.preference.PreferenceManager
 
 
 /**
@@ -63,15 +63,16 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
 
                         tts?.setOnUtteranceProgressListener(object: UtteranceProgressListener() {
                             override fun onDone(utteranceId: String?) {
-                                playSearchArtist("Ленинград2")
+                                val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+                                playSearchArtist(sp.getString("playlist", null))
                             }
 
                             override fun onError(utteranceId: String) {
-                                System.currentTimeMillis();
+
                             }
 
                             override fun onStart(utteranceId: String) {
-                                System.currentTimeMillis();
+
                             }
 
                         })
@@ -95,13 +96,16 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
 
     }
 
-    fun playSearchArtist(artist: String) {
+    fun playSearchArtist(playlist: String?) {
+
+        playlist ?: return
+
         val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
         intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS,
                 MediaStore.Audio.Artists.ENTRY_CONTENT_TYPE)
-        intent.putExtra(MediaStore.EXTRA_MEDIA_PLAYLIST, artist)
-        intent.putExtra(SearchManager.QUERY, artist)
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
+        intent.putExtra(MediaStore.EXTRA_MEDIA_PLAYLIST, playlist)
+        intent.putExtra(SearchManager.QUERY, playlist)
+        if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(intent)
         }
     }
