@@ -33,14 +33,17 @@ class WeatherProvider : IProvider {
     }
 
 
-    override fun prepare(): Boolean {
+    override fun prepare(): Boolean  {
 
         var mGoogleApiClient: GoogleApiClient? = null
 
         mGoogleApiClient = GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
                     override fun onConnected(p0: Bundle?) {
-                        val mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient)
+                        val mLastLocation = try {
+                            LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient)
+                        }  catch (e: SecurityException) { null }
+
                         if (mLastLocation != null) {
 
                             getWeatherByLocation(mLastLocation)
@@ -52,13 +55,25 @@ class WeatherProvider : IProvider {
                             mLocationRequest.fastestInterval = 5000
                             mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
-                            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, object : LocationListener {
-                                override fun onLocationChanged(p0: Location?) {
-                                    getWeatherByLocation(mLastLocation)
+                            try {
+                                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, object : LocationListener {
+                                    override fun onLocationChanged(p0: Location?) {
+                                        if(p0 != null)
+                                            getWeatherByLocation(p0)
+                                        else {
+                                            synchronized(lock) {
+                                                lock.notifyAll()
+                                            }
+                                        }
 
-                                    LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
+                                        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
+                                    }
+                                })
+                            } catch(e: SecurityException) {
+                                synchronized(lock) {
+                                    lock.notifyAll()
                                 }
-                            })
+                            }
                         }
                     }
 
@@ -73,7 +88,7 @@ class WeatherProvider : IProvider {
         mGoogleApiClient.connect()
 
         synchronized(lock) {
-            lock.wait()
+            lock.wait(10000)
         }
 
 
@@ -96,11 +111,11 @@ class WeatherProvider : IProvider {
 
     override fun getText(): String {
 
-        val res = result!!
+        val res =result ?: return ""
 
         var text: String = "Сейчас " + res.main.temp.toInt() + " " + Utils.getCorrectWordForDigit(res.main.temp.toInt(), " градус", " градуса", " градусов", " градусов") +  ". "
 
-        text+= " " + result?.weather?.first()?.description + ". "
+        text+= " " + res.weather.first().description + ". "
 
         if(res.wind != null){
             val windVar:Wind = res.wind
