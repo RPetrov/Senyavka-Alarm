@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
 
         enableAlarm.isChecked = sp.getBoolean("enableAlarm.isChecked", false)
         playlist.setText(sp.getString("playlist", null))
+        checkBoxMusic.isChecked = sp.getBoolean("checkBoxMusic.isChecked", false)
     }
 
     private fun checkPermissions() {
@@ -138,6 +139,7 @@ class MainActivity : AppCompatActivity() {
         sp.edit().putInt("hours", hours).apply()
         sp.edit().putInt("minutes", minutes).apply()
         sp.edit().putBoolean("enableAlarm.isChecked", enableAlarm.isChecked).apply()
+        sp.edit().putBoolean("checkBoxMusic.isChecked", checkBoxMusic.isChecked).apply()
         sp.edit().putString("playlist", if (checkBoxMusic.isChecked) {playlist.text.toString()} else null).apply()
     }
 

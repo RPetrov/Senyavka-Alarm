@@ -75,7 +75,8 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
                                 if(cancel) return
 
                                 val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                                playSearchArtist(sp.getString("playlist", null))
+                                if(sp.getBoolean("checkBoxMusic.isChecked", false))
+                                    playSearchArtist(sp.getString("playlist", null))
                             }
 
                             override fun onError(utteranceId: String) {
