@@ -3,6 +3,8 @@ package rpetrov.senyavkaspeakingalarmclock
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import android.view.WindowManager
 
 
@@ -12,6 +14,11 @@ import android.view.WindowManager
 
 class AlarmBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+
+        val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        if(!sp.getBoolean("enableAlarm.isChecked", false)){
+            return
+        }
 
         val i = Intent(context, AlarmActivity::class.java)
         i.flags = Intent.FLAG_ACTIVITY_NEW_TASK

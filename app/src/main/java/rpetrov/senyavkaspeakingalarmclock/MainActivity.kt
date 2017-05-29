@@ -20,6 +20,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import butterknife.bindView
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -172,7 +173,7 @@ class MainActivity : AppCompatActivity() {
 
         val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi)
+        Toast.makeText(this, "Будильник установлен на " + SimpleDateFormat("HH:mm").format(calendar.time), Toast.LENGTH_LONG).show()
 
     }
 

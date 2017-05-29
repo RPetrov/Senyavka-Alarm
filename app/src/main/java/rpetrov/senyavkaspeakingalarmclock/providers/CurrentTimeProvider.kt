@@ -12,9 +12,18 @@ class CurrentTimeProvider : IProvider {
 
     override fun getText(): String {
         val now: Calendar = Calendar.getInstance()
-        val nowText: String = String.format(Locale.getDefault(), "%02d:%02d", now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE))
-        val stringResult: String = "Сейчас уже " + now.get(Calendar.HOUR_OF_DAY) + " "+ getHour(now.get(Calendar.HOUR_OF_DAY)) + ", " +
-                + now.get(Calendar.MINUTE) + getMinutes(now.get(Calendar.MINUTE))
+
+        val hours = now.get(Calendar.HOUR_OF_DAY)
+        val minutes = now.get(Calendar.MINUTE)
+
+
+
+        val stringResult: String =  if(hours in 6..12 && now.get(Calendar.MINUTE) == 0){
+            "Сейчас уже " + now.get(Calendar.HOUR_OF_DAY) + " "+ getHour(now.get(Calendar.HOUR_OF_DAY)) + " утра."
+        } else{
+            "Сейчас уже " + now.get(Calendar.HOUR_OF_DAY) + " "+ getHour(now.get(Calendar.HOUR_OF_DAY)) + ", " +
+                    + now.get(Calendar.MINUTE) + getMinutes(now.get(Calendar.MINUTE))
+        }
 
         return stringResult
     }
