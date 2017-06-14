@@ -7,14 +7,6 @@ package rpetrov.senyavkaspeakingalarmclock.providers
 
 /**
  *
- * Время
- * Дата
- * Погода
- * Курс доллара
- * Событий на сегодня
- *
- *
- *
  */
 interface IProvider {
     fun prepare(): Boolean
