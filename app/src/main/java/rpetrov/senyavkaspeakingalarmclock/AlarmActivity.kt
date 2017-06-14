@@ -36,7 +36,7 @@ class AlarmActivity : AppCompatActivity() {
                     PowerManager.ACQUIRE_CAUSES_WAKEUP or
                     PowerManager.ON_AFTER_RELEASE, "SEN_ALARM")
 
-            wakeLock?.acquire(60*1000)
+            wakeLock?.acquire()
         }
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON + WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
@@ -49,8 +49,8 @@ class AlarmActivity : AppCompatActivity() {
         val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putBoolean("enableAlarm.isChecked", false).apply()
 
-        providerBuildTask = ProviderBuildTask(this)
-        providerBuildTask?.execute(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(this), CurrencyProvider(), CalendarProvider(this))
+   //     providerBuildTask = ProviderBuildTask(this)
+   //     providerBuildTask?.execute(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(this), CurrencyProvider(), CalendarProvider(this))
 
         time.text = SimpleDateFormat("HH:mm").format(Date())
     }
