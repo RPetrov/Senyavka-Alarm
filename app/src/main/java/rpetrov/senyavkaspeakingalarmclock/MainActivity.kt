@@ -15,11 +15,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.Toolbar
-import android.view.Menu
-import android.view.MenuItem
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import butterknife.bindView
+import rpetrov.senyavkaspeakingalarmclock.providers.ProvidersFactory
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     val enableAlarm: SwitchCompat by bindView(R.id.enable_alarm)
     val playlist: EditText by bindView(R.id.text_playlist)
     val checkBoxMusic: CheckBox by bindView(R.id.checkBoxMusic)
+    val providers: ListView by bindView(R.id.providers)
 
 
     var hours: Int = 0
@@ -56,11 +58,39 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
-        checkBoxMusic.setOnCheckedChangeListener(object: CompoundButton.OnCheckedChangeListener {
+        checkBoxMusic.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                 playlist.isEnabled = isChecked
             }
         })
+
+
+
+        providers.adapter = object : BaseAdapter() {
+
+            val providersFactory: ProvidersFactory = ProvidersFactory()
+
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+                var view = convertView
+                if (view == null) {
+                    view = LayoutInflater.from(this@MainActivity).inflate(R.layout.provider_item, parent, false)
+                }
+
+                if (view == null)
+                    throw RuntimeException("View is null")
+
+                val name = view.findViewById(R.id.provider_name)
+                (name as TextView).text = providersFactory.getAll()[position]::class.toString()
+
+                return view
+            }
+
+            override fun getItem(position: Int): Any = providersFactory.getAll()[position]
+
+            override fun getItemId(position: Int): Long = position.toLong()
+
+            override fun getCount(): Int = providersFactory.getAll().size
+        }
 
     }
 
@@ -97,7 +127,7 @@ class MainActivity : AppCompatActivity() {
             permissions.add(Manifest.permission.READ_CALENDAR)
         }
 
-        if(!permissions.isEmpty()){
+        if (!permissions.isEmpty()) {
             ActivityCompat.requestPermissions(this,
                     permissions.toTypedArray(),
                     0)
