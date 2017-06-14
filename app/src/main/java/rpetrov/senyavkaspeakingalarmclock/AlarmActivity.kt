@@ -36,7 +36,7 @@ class AlarmActivity : AppCompatActivity() {
                     PowerManager.ACQUIRE_CAUSES_WAKEUP or
                     PowerManager.ON_AFTER_RELEASE, "SEN_ALARM")
 
-            wakeLock?.acquire()
+            wakeLock?.acquire(60*1000)
         }
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON + WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
