@@ -1,5 +1,6 @@
 package rpetrov.senyavkaspeakingalarmclock.providers
 
+import android.Manifest
 import android.provider.CalendarContract
 import android.content.ContentUris
 import android.content.Context
@@ -56,4 +57,6 @@ class CalendarProvider : IProvider{
 
         return "На сегодня заплонировано " + count + Utils.getCorrectWordForDigit(count, " событие", " события", " событий", " событий")
     }
+
+    override fun getPermissions(): Array<String> = arrayOf(Manifest.permission.READ_CALENDAR)
 }

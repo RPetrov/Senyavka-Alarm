@@ -131,4 +131,6 @@ class WeatherProvider : IProvider {
         return text
 
     }
+
+    override fun getPermissions(): Array<String> = arrayOf()
 }

@@ -92,6 +92,5 @@ class NowDateProvider : IProvider {
 
     }
 
-
-
+    override fun getPermissions(): Array<String> = arrayOf()
 }

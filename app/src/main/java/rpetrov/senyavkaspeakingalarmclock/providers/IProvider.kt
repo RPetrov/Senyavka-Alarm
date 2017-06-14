@@ -19,4 +19,5 @@ package rpetrov.senyavkaspeakingalarmclock.providers
 interface IProvider {
     fun prepare(): Boolean
     fun getText(): String
+    fun getPermissions(): Array<String>
 }

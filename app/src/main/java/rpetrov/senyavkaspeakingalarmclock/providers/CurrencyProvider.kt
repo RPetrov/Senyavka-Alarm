@@ -40,4 +40,5 @@ class CurrencyProvider : IProvider {
         return text
     }
 
+    override fun getPermissions(): Array<String> = arrayOf()
 }

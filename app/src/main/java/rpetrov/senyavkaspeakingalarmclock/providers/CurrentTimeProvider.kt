@@ -36,4 +36,6 @@ class CurrentTimeProvider : IProvider {
     private fun getMinutes(m: Int): String? {
         return Utils.getCorrectWordForDigit(m, " минута", " минуты", " минут", " минут")
     }
+
+    override fun getPermissions(): Array<String>  = arrayOf()
 }
