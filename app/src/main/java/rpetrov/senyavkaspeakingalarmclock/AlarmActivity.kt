@@ -49,8 +49,8 @@ class AlarmActivity : AppCompatActivity() {
         val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putBoolean("enableAlarm.isChecked", false).apply()
 
-   //     providerBuildTask = ProviderBuildTask(this)
-   //     providerBuildTask?.execute(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(this), CurrencyProvider(), CalendarProvider(this))
+        providerBuildTask = ProviderBuildTask(this)
+        providerBuildTask?.execute(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(this), CurrencyProvider(), CalendarProvider(this))
 
         time.text = SimpleDateFormat("HH:mm").format(Date())
     }
