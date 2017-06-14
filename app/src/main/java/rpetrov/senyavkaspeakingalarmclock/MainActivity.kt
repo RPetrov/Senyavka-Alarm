@@ -22,6 +22,7 @@ import android.widget.*
 import butterknife.bindView
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -79,23 +80,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions() {
+
+        val permissions: ArrayList<String> = ArrayList<String>()
+
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    0)
+            permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
         }
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED) {
 
+            permissions.add(Manifest.permission.READ_CALENDAR)
+        }
+
+        if(!permissions.isEmpty()){
             ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.READ_CALENDAR),
+                    permissions.toTypedArray(),
                     0)
         }
+
     }
 
 //
