@@ -41,4 +41,10 @@ class CurrencyProvider : IProvider {
     }
 
     override fun getPermissions(): Array<String> = arrayOf()
+
+    override fun getName() = "Курс доллара"
+
+    override fun getDescription() = ""
+
+    override fun isConfigurable() = false
 }

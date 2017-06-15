@@ -133,4 +133,11 @@ class WeatherProvider : IProvider {
     }
 
     override fun getPermissions(): Array<String> = arrayOf()
+
+    override fun getName() = "Погода"
+
+    override fun getDescription() = ""
+
+    override fun isConfigurable() = false
+
 }

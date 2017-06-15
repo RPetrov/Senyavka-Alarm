@@ -38,4 +38,10 @@ class CurrentTimeProvider : IProvider {
     }
 
     override fun getPermissions(): Array<String>  = arrayOf()
+
+    override fun getName() = "Время"
+
+    override fun getDescription() = ""
+
+    override fun isConfigurable() = false
 }

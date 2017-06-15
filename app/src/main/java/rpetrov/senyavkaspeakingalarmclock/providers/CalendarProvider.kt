@@ -59,4 +59,10 @@ class CalendarProvider : IProvider{
     }
 
     override fun getPermissions(): Array<String> = arrayOf(Manifest.permission.READ_CALENDAR)
+
+    override fun getName() = "События на сегодня"
+
+    override fun getDescription() = ""
+
+    override fun isConfigurable() = false
 }

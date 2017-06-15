@@ -93,4 +93,10 @@ class NowDateProvider : IProvider {
     }
 
     override fun getPermissions(): Array<String> = arrayOf()
+
+    override fun getName() = "Дата"
+
+    override fun getDescription() = ""
+
+    override fun isConfigurable() = false
 }

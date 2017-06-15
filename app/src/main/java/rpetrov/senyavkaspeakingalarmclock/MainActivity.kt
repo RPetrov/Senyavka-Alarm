@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         providers.adapter = object : BaseAdapter() {
 
-            val providersFactory: ProvidersFactory = ProvidersFactory()
+            val providers = ProvidersFactory.getAll(this@MainActivity)
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
                 var view = convertView
@@ -80,16 +80,22 @@ class MainActivity : AppCompatActivity() {
                     throw RuntimeException("View is null")
 
                 val name = view.findViewById(R.id.provider_name)
-                (name as TextView).text = providersFactory.getAll()[position]::class.toString()
+                val desc = view.findViewById(R.id.provider_desc)
+                val enable = view.findViewById(R.id.provider_enable)
+                val settings = view.findViewById(R.id.provider_settings)
+                (name as TextView).text = providers[position].getName()
+                (desc as TextView).text = providers[position].getDescription()
+                settings.isEnabled = providers[position].isConfigurable()
+                // enable
 
                 return view
             }
 
-            override fun getItem(position: Int): Any = providersFactory.getAll()[position]
+            override fun getItem(position: Int): Any = providers[position]
 
             override fun getItemId(position: Int): Long = position.toLong()
 
-            override fun getCount(): Int = providersFactory.getAll().size
+            override fun getCount(): Int = providers.size
         }
 
     }
@@ -132,7 +138,6 @@ class MainActivity : AppCompatActivity() {
                     permissions.toTypedArray(),
                     0)
         }
-
     }
 
 //
