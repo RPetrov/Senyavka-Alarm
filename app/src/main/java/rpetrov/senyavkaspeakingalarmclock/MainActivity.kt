@@ -181,8 +181,6 @@ class MainActivity : AppCompatActivity() {
         time.text = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute)
         this.hours = hourOfDay
         this.minutes = minute
-
-
     }
 
     override fun onPause() {
