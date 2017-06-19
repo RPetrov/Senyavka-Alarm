@@ -1,10 +1,15 @@
 package rpetrov.senyavkaspeakingalarmclock.providers.text
 
+import android.content.Context
+
 /**
  * Created by Roman Petrov
  */
 
-class NowDateProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
+class NowDateProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
+    constructor(context: Context) : super(context)
+
+
     override fun prepare(): Boolean {
         return true
     }
@@ -13,13 +18,13 @@ class NowDateProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextProvid
         val now: java.util.Calendar = java.util.Calendar.getInstance()
 
 
-        val stringResult: String = getDay(now.get(java.util.Calendar.DAY_OF_MONTH)) + " " + getMonth(now.get(java.util.Calendar.MONTH) + 1) + ". "+ getDayOfWeek(now.get(java.util.Calendar.DAY_OF_WEEK))
+        val stringResult: String = getDay(now.get(java.util.Calendar.DAY_OF_MONTH)) + " " + getMonth(now.get(java.util.Calendar.MONTH) + 1) + ". " + getDayOfWeek(now.get(java.util.Calendar.DAY_OF_WEEK))
         return stringResult
     }
 
 
     private fun getDay(day: Int): String? {
-        return when (day){
+        return when (day) {
             1 -> "первое"
             2 -> "второе"
             3 -> "третье"
@@ -57,7 +62,7 @@ class NowDateProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextProvid
     }
 
     private fun getMonth(day: Int): String? {
-        return when (day){
+        return when (day) {
             1 -> "января"
             2 -> "февраля"
             3 -> "марта"
@@ -77,7 +82,7 @@ class NowDateProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextProvid
     }
 
     private fun getDayOfWeek(day: Int): String? {
-        return when (day){
+        return when (day) {
             java.util.Calendar.MONDAY -> "понедельник"
             java.util.Calendar.TUESDAY -> "вторник"
             java.util.Calendar.WEDNESDAY -> "среда"

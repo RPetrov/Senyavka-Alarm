@@ -1,19 +1,17 @@
 package rpetrov.senyavkaspeakingalarmclock.providers.text
 
+import android.content.Context
 import com.ibm.icu.text.RuleBasedNumberFormat
 
 
 /**
  * Created by Roman Petrov
  */
-class CalendarProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
+class CalendarProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
 
-    val context: android.content.Context
     var count: Int = 0
 
-    constructor(context: android.content.Context) {
-        this.context = context
-    }
+    constructor(context: Context) : super(context)
 
 
     override fun prepare(): Boolean {

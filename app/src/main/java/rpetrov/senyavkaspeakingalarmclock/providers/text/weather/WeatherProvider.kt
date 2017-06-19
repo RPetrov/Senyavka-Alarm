@@ -11,6 +11,7 @@ import com.google.gson.Gson
 import com.ibm.icu.text.RuleBasedNumberFormat
 import rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider
 import rpetrov.senyavkaspeakingalarmclock.providers.Utils
+import rpetrov.senyavkaspeakingalarmclock.providers.text.BaseProvider
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*
@@ -22,17 +23,14 @@ import java.util.*
 
 const val URL: String = "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&APPID=74e5ddb61377cec9465df223711dddce&lang=ru&units=metric"
 
-class WeatherProvider : ITextProvider {
+class WeatherProvider : BaseProvider, ITextProvider {
+
 
 
     private val lock = java.lang.Object()
-    val context: Context
     var result: Result? = null
 
-
-    constructor(context: Context) {
-        this.context = context
-    }
+    constructor(context: Context) : super(context)
 
 
     override fun prepare(): Boolean  {

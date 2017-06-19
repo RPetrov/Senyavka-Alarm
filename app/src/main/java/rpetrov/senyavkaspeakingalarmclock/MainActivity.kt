@@ -20,7 +20,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import butterknife.bindView
-import rpetrov.senyavkaspeakingalarmclock.providers.IProviderInfo
 import rpetrov.senyavkaspeakingalarmclock.providers.ProvidersFactory
 import java.text.SimpleDateFormat
 import java.util.*
@@ -75,11 +74,18 @@ class MainActivity : AppCompatActivity() {
 
                 val name = view.findViewById(R.id.provider_name)
                 val desc = view.findViewById(R.id.provider_desc)
-                val enable = view.findViewById(R.id.provider_enable)
+                val enable = view.findViewById(R.id.provider_enable_box)
                 val settings = view.findViewById(R.id.provider_settings)
                 (name as TextView).text = providers[position].getName()
                 (desc as TextView).text = providers[position].getDescription()
+                (enable as CheckBox).isChecked = providers[position].isEnable()
                 settings.isEnabled = providers[position].isConfigurable()
+
+                enable.setOnCheckedChangeListener(object: CompoundButton.OnCheckedChangeListener {
+                    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                        providers[position].enable(isChecked)
+                    }
+                })
                 // enable
 
                 return view
@@ -110,6 +116,8 @@ class MainActivity : AppCompatActivity() {
 
         val permissions: ArrayList<String> = ArrayList<String>()
 
+
+        // todo get from providers
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -204,6 +212,7 @@ class MainActivity : AppCompatActivity() {
 
         val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi)
         Toast.makeText(this, "Будильник установлен на " + SimpleDateFormat("HH:mm").format(calendar.time), Toast.LENGTH_LONG).show()
 
     }

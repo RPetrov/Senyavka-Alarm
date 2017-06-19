@@ -1,14 +1,18 @@
 package rpetrov.senyavkaspeakingalarmclock.providers.text
 
-import java.util.*
+import android.content.Context
 
 /**
  * Created by Roman Petrov
  */
-class CurrentTimeProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
+class CurrentTimeProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
+    constructor(context: Context) : super(context)
+
+
     override fun prepare(): Boolean {
         return true
     }
+
 
     override fun getText(): String {
         val now: java.util.Calendar = java.util.Calendar.getInstance()
@@ -17,12 +21,11 @@ class CurrentTimeProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextPr
         val minutes = now.get(java.util.Calendar.MINUTE)
 
 
-
-        val stringResult: String =  if(hours in 6..12 && now.get(java.util.Calendar.MINUTE) == 0){
-            "Сейчас уже " + now.get(java.util.Calendar.HOUR_OF_DAY) + " "+ getHour(now.get(java.util.Calendar.HOUR_OF_DAY)) + " утра."
-        } else{
-            "Сейчас уже " + now.get(java.util.Calendar.HOUR_OF_DAY) + " "+ getHour(now.get(java.util.Calendar.HOUR_OF_DAY)) + ", " +
-                    + now.get(java.util.Calendar.MINUTE) + getMinutes(now.get(java.util.Calendar.MINUTE))
+        val stringResult: String = if (hours in 6..12 && now.get(java.util.Calendar.MINUTE) == 0) {
+            "Сейчас уже " + now.get(java.util.Calendar.HOUR_OF_DAY) + " " + getHour(now.get(java.util.Calendar.HOUR_OF_DAY)) + " утра."
+        } else {
+            "Сейчас уже " + now.get(java.util.Calendar.HOUR_OF_DAY) + " " + getHour(now.get(java.util.Calendar.HOUR_OF_DAY)) + ", " +
+                    +now.get(java.util.Calendar.MINUTE) + getMinutes(now.get(java.util.Calendar.MINUTE))
         }
 
         return stringResult
@@ -37,7 +40,7 @@ class CurrentTimeProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextPr
         return rpetrov.senyavkaspeakingalarmclock.providers.Utils.getCorrectWordForDigit(m, " минута", " минуты", " минут", " минут")
     }
 
-    override fun getPermissions(): Array<String>  = arrayOf()
+    override fun getPermissions(): Array<String> = arrayOf()
 
     override fun getName() = "Время"
 

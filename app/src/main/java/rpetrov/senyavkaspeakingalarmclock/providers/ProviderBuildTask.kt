@@ -1,23 +1,15 @@
-package rpetrov.senyavkaspeakingalarmclock.providers.text
+package rpetrov.senyavkaspeakingalarmclock.providers
 
-import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.media.AudioManager
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Vibrator
-import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import java.util.*
-import android.media.AudioManager
-import android.preference.PreferenceManager
-import rpetrov.senyavkaspeakingalarmclock.providers.IProvider
-import rpetrov.senyavkaspeakingalarmclock.providers.IRunnableProvider
-import rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider
 
 
 /**
@@ -30,15 +22,31 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
     private val vibrator: Vibrator
 
     private var cancel: Boolean = false
-    private var textProviders: List<ITextProvider>
-    private var runnableProviders: List<IRunnableProvider>
-
+    private val textProviders: List<ITextProvider>
+    private val runnableProviders: List<IRunnableProvider>
 
 
     constructor(context: Context, textProviders: List<ITextProvider>, runnableProviders: List<IRunnableProvider>) : super() {
         this.context = context
-        this.textProviders = textProviders
-        this.runnableProviders = runnableProviders
+        //    this.textProviders = textProviders
+        //     this.runnableProviders = runnableProviders
+
+        this.textProviders = textProviders.filter {
+            try {
+                return@filter it.isEnable()
+            } catch(e: Exception) {
+                return@filter false
+            }
+        }
+
+        this.runnableProviders = runnableProviders.filter {
+            try {
+                return@filter it.isEnable()
+            } catch(e: Exception) {
+                return@filter false
+            }
+        }
+
 
         vibrator = context.getSystemService(AppCompatActivity.VIBRATOR_SERVICE) as Vibrator
     }
@@ -58,7 +66,7 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
 
     override fun onPostExecute(result: List<String>) {
 
-        if(cancel) return
+        if (cancel) return
 
         vibrator.vibrate(longArrayOf(700, 300, 700, 300, 700, 300, 700, 300, 700, 1500), -1)
 
@@ -67,11 +75,10 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
         Handler().postDelayed({
 
 
-
             tts = TextToSpeech(context, object : TextToSpeech.OnInitListener {
                 override fun onInit(status: Int) {
 
-                    if(cancel) return
+                    if (cancel) return
 
                     if (status == TextToSpeech.SUCCESS) {
 
@@ -79,9 +86,9 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
 
                         val result = tts?.setLanguage(locale)
 
-                        tts?.setOnUtteranceProgressListener(object: UtteranceProgressListener() {
+                        tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                             override fun onDone(utteranceId: String?) {
-                                if(cancel) return
+                                if (cancel) return
                                 for (i in runnableProviders) {
                                     i.run()
                                 }
@@ -100,7 +107,7 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
                         for (i in 0..items.size - 1) {
                             val myHashAlarm = HashMap<String, String>()
                             myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_ALARM.toString())
-                            if(i == items.size - 1)
+                            if (i == items.size - 1)
                                 myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "LAST MESSAGE!")
                             tts?.speak(items[i], TextToSpeech.QUEUE_ADD, myHashAlarm)
                         }

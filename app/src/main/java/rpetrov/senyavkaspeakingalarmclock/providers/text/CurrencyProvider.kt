@@ -1,11 +1,14 @@
 package rpetrov.senyavkaspeakingalarmclock.providers.text
 
+import android.content.Context
 import com.ibm.icu.text.RuleBasedNumberFormat
 
 /**
  * Created by Roman Petrov
  */
-class CurrencyProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
+class CurrencyProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
+    constructor(context: Context) : super(context)
+
 
     data class Rates(val RUB: String)
     data class Result(val rates: rpetrov.senyavkaspeakingalarmclock.providers.text.CurrencyProvider.Rates)

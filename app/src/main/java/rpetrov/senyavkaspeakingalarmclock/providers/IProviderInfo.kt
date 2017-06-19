@@ -8,4 +8,7 @@ interface IProviderInfo {
     fun getName(): String
     fun getDescription(): String
     fun isConfigurable(): Boolean
+
+    fun isEnable(): Boolean
+    fun enable(boolean: Boolean)
 }

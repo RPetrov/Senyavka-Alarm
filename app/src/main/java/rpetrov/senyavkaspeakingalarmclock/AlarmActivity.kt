@@ -9,12 +9,11 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.TextView
 import butterknife.bindView
-import rpetrov.senyavkaspeakingalarmclock.providers.text.weather.WeatherProvider
 import java.text.SimpleDateFormat
 import java.util.*
 import android.view.WindowManager
+import rpetrov.senyavkaspeakingalarmclock.providers.ProviderBuildTask
 import rpetrov.senyavkaspeakingalarmclock.providers.ProvidersFactory
-import rpetrov.senyavkaspeakingalarmclock.providers.text.*
 
 
 class AlarmActivity : AppCompatActivity() {

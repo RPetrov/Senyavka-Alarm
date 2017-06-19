@@ -23,8 +23,8 @@ object ProvidersFactory {
 
     fun getAllTextProvider(context: Context) : List<ITextProvider> {
         if(textProviders == null){
-            textProviders = arrayListOf(CurrentTimeProvider(), NowDateProvider(), WeatherProvider(context),
-                    CurrencyProvider(), CalendarProvider(context))
+            textProviders = arrayListOf(CurrentTimeProvider(context), NowDateProvider(context), WeatherProvider(context),
+                    CurrencyProvider(context), CalendarProvider(context))
         }
         return textProviders as List<ITextProvider>
     }
