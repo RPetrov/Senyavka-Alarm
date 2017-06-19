@@ -1,4 +1,4 @@
-package rpetrov.senyavkaspeakingalarmclock.providers
+package rpetrov.senyavkaspeakingalarmclock.providers.text
 
 import android.app.SearchManager
 import android.content.Context
@@ -15,31 +15,41 @@ import android.util.Log
 import java.util.*
 import android.media.AudioManager
 import android.preference.PreferenceManager
+import rpetrov.senyavkaspeakingalarmclock.providers.IProvider
+import rpetrov.senyavkaspeakingalarmclock.providers.IRunnableProvider
+import rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider
 
 
 /**
  * Created by Roman Petrov
  */
 
-class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
+class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
 
     private val context: Context
     private val vibrator: Vibrator
 
     private var cancel: Boolean = false
+    private var textProviders: List<ITextProvider>
+    private var runnableProviders: List<IRunnableProvider>
 
-    constructor(context: Context) : super() {
+
+
+    constructor(context: Context, textProviders: List<ITextProvider>, runnableProviders: List<IRunnableProvider>) : super() {
         this.context = context
+        this.textProviders = textProviders
+        this.runnableProviders = runnableProviders
+
         vibrator = context.getSystemService(AppCompatActivity.VIBRATOR_SERVICE) as Vibrator
     }
 
     private var tts: TextToSpeech? = null
 
 
-    override fun doInBackground(vararg providers: IProvider): List<String> =
-            providers.filter {
+    override fun doInBackground(vararg voids: Void): List<String> =
+            textProviders.filter {
                 try {
-                    return@filter it.prepare()
+                    return@filter it is ITextProvider && it.prepare()
                 } catch(e: Exception) {
                     return@filter false
                 }
@@ -71,12 +81,10 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
 
                         tts?.setOnUtteranceProgressListener(object: UtteranceProgressListener() {
                             override fun onDone(utteranceId: String?) {
-
                                 if(cancel) return
-
-                                val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                                if(sp.getBoolean("checkBoxMusic.isChecked", false))
-                                    playSearchArtist(sp.getString("playlist", null))
+                                for (i in runnableProviders) {
+                                    i.run()
+                                }
                             }
 
                             override fun onError(utteranceId: String) {
@@ -108,19 +116,6 @@ class ProviderBuildTask : AsyncTask<IProvider, Void, List<String>> {
 
     }
 
-    fun playSearchArtist(playlist: String?) {
-
-        playlist ?: return
-
-        val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
-        intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS,
-                MediaStore.Audio.Artists.ENTRY_CONTENT_TYPE)
-        intent.putExtra(MediaStore.EXTRA_MEDIA_PLAYLIST, playlist)
-        intent.putExtra(SearchManager.QUERY, playlist)
-        if (intent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(intent)
-        }
-    }
 
     fun cancel() {
         cancel = true

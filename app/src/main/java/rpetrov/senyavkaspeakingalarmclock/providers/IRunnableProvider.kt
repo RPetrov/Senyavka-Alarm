@@ -3,4 +3,9 @@ package rpetrov.senyavkaspeakingalarmclock.providers
 /**
  * Created by Roman Petrov
  */
-interface IProvider
+
+
+/**
+ *
+ */
+interface IRunnableProvider : IProviderInfo, Runnable, IProvider

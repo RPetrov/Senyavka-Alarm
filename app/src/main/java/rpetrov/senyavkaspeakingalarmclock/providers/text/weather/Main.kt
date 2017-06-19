@@ -1,4 +1,4 @@
-package rpetrov.senyavkaspeakingalarmclock.providers.weather
+package rpetrov.senyavkaspeakingalarmclock.providers.text.weather
 
 /**
  * Created by Roman Petrov

@@ -1,4 +1,4 @@
-package rpetrov.senyavkaspeakingalarmclock.providers.weather
+package rpetrov.senyavkaspeakingalarmclock.providers.text.weather
 
 import android.content.Context
 import android.location.Location
@@ -9,7 +9,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import com.ibm.icu.text.RuleBasedNumberFormat
-import rpetrov.senyavkaspeakingalarmclock.providers.IProvider
+import rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider
 import rpetrov.senyavkaspeakingalarmclock.providers.Utils
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -22,7 +22,7 @@ import java.util.*
 
 const val URL: String = "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&APPID=74e5ddb61377cec9465df223711dddce&lang=ru&units=metric"
 
-class WeatherProvider : IProvider {
+class WeatherProvider : ITextProvider {
 
 
     private val lock = java.lang.Object()

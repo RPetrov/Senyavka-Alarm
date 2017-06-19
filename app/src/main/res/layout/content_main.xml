@@ -52,48 +52,48 @@
         </RelativeLayout>
 
 
-        <RelativeLayout
-            android:layout_marginTop="24dip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <!--<RelativeLayout-->
+            <!--android:layout_marginTop="24dip"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
 
-            <LinearLayout
-                android:layout_toLeftOf="@+id/checkBox"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <!--<LinearLayout-->
+                <!--android:layout_toLeftOf="@+id/checkBox"-->
+                <!--android:orientation="vertical"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:gravity="center_vertical|left"
-                    android:text="Запустить Google Music в конце"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp" />
+                <!--<android.support.v7.widget.AppCompatTextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:gravity="center_vertical|left"-->
+                    <!--android:text="Запустить Google Music в конце"-->
+                    <!--android:textColor="@android:color/black"-->
+                    <!--android:textSize="14sp" />-->
 
-                <android.support.v7.widget.AppCompatEditText
-                    android:hint="playlist"
-                    android:layout_below="@+id/text_gmusic"
-                    android:id="@+id/text_playlist"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical|left"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="14sp" />
+                <!--<android.support.v7.widget.AppCompatEditText-->
+                    <!--android:hint="playlist"-->
+                    <!--android:layout_below="@+id/text_gmusic"-->
+                    <!--android:id="@+id/text_playlist"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:gravity="center_vertical|left"-->
+                    <!--android:textColor="@android:color/darker_gray"-->
+                    <!--android:textSize="14sp" />-->
 
-            </LinearLayout>
+            <!--</LinearLayout>-->
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:id="@+id/checkBoxMusic"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                />
+            <!--<android.support.v7.widget.AppCompatCheckBox-->
+                <!--android:id="@+id/checkBoxMusic"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--/>-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
         <ListView
             android:id="@+id/providers"

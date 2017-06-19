@@ -1,21 +1,19 @@
-package rpetrov.senyavkaspeakingalarmclock.providers
-
-import java.util.*
+package rpetrov.senyavkaspeakingalarmclock.providers.text
 
 /**
  * Created by Roman Petrov
  */
 
-class NowDateProvider : IProvider {
+class NowDateProvider : rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
     override fun prepare(): Boolean {
         return true
     }
 
     override fun getText(): String {
-        val now: Calendar = Calendar.getInstance()
+        val now: java.util.Calendar = java.util.Calendar.getInstance()
 
 
-        val stringResult: String = getDay(now.get(Calendar.DAY_OF_MONTH)) + " " + getMonth(now.get(Calendar.MONTH) + 1) + ". "+ getDayOfWeek(now.get(Calendar.DAY_OF_WEEK))
+        val stringResult: String = getDay(now.get(java.util.Calendar.DAY_OF_MONTH)) + " " + getMonth(now.get(java.util.Calendar.MONTH) + 1) + ". "+ getDayOfWeek(now.get(java.util.Calendar.DAY_OF_WEEK))
         return stringResult
     }
 
@@ -80,13 +78,13 @@ class NowDateProvider : IProvider {
 
     private fun getDayOfWeek(day: Int): String? {
         return when (day){
-            Calendar.MONDAY -> "понедельник"
-            Calendar.TUESDAY -> "вторник"
-            Calendar.WEDNESDAY -> "среда"
-            Calendar.THURSDAY -> "четверг"
-            Calendar.FRIDAY -> "пятница"
-            Calendar.SATURDAY -> "суббота"
-            Calendar.SUNDAY -> "воскресенье"
+            java.util.Calendar.MONDAY -> "понедельник"
+            java.util.Calendar.TUESDAY -> "вторник"
+            java.util.Calendar.WEDNESDAY -> "среда"
+            java.util.Calendar.THURSDAY -> "четверг"
+            java.util.Calendar.FRIDAY -> "пятница"
+            java.util.Calendar.SATURDAY -> "суббота"
+            java.util.Calendar.SUNDAY -> "воскресенье"
             else -> ""
         }
 

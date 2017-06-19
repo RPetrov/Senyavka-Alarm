@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import butterknife.bindView
+import rpetrov.senyavkaspeakingalarmclock.providers.IProviderInfo
 import rpetrov.senyavkaspeakingalarmclock.providers.ProvidersFactory
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,9 +33,7 @@ class MainActivity : AppCompatActivity() {
     val toolbar: Toolbar by bindView(R.id.toolbar)
     val time: TextView by bindView(R.id.time)
     val enableAlarm: SwitchCompat by bindView(R.id.enable_alarm)
-    val playlist: EditText by bindView(R.id.text_playlist)
-    val checkBoxMusic: CheckBox by bindView(R.id.checkBoxMusic)
-    val providers: ListView by bindView(R.id.providers)
+    val providersListView: ListView by bindView(R.id.providers)
 
 
     var hours: Int = 0
@@ -58,15 +57,10 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
-        checkBoxMusic.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
-            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                playlist.isEnabled = isChecked
-            }
-        })
 
 
 
-        providers.adapter = object : BaseAdapter() {
+        providersListView.adapter = object : BaseAdapter() {
 
             val providers = ProvidersFactory.getAll(this@MainActivity)
 
@@ -110,9 +104,6 @@ class MainActivity : AppCompatActivity() {
         time.text = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes)
 
         enableAlarm.isChecked = sp.getBoolean("enableAlarm.isChecked", false)
-        playlist.setText(sp.getString("playlist", null))
-        checkBoxMusic.isChecked = sp.getBoolean("checkBoxMusic.isChecked", false)
-        playlist.isEnabled = checkBoxMusic.isChecked
     }
 
     private fun checkPermissions() {
@@ -186,8 +177,6 @@ class MainActivity : AppCompatActivity() {
         sp.edit().putInt("hours", hours).apply()
         sp.edit().putInt("minutes", minutes).apply()
         sp.edit().putBoolean("enableAlarm.isChecked", enableAlarm.isChecked).apply()
-        sp.edit().putBoolean("checkBoxMusic.isChecked", checkBoxMusic.isChecked).apply()
-        sp.edit().putString("playlist", playlist.text.toString()).apply()
     }
 
 
