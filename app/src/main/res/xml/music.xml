@@ -2,6 +2,7 @@
     <!-- opens a subscreen of settings -->
 
     <ListPreference
+        android:defaultValue="Плейлист"
         android:title="Тип медиа"
         android:entries="@array/music_types_values"
         android:entryValues="@array/music_types_values"
@@ -9,6 +10,7 @@
          />
 
     <EditTextPreference
+        android:defaultValue="Piano"
         android:key="music_name"
         android:title="Имя" />
 
