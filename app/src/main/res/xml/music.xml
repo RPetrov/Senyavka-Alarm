@@ -1,0 +1,7 @@
+<PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- opens a subscreen of settings -->
+    <EditTextPreference
+        android:key="music_name"
+        android:title="Имя" />
+
+</PreferenceScreen>

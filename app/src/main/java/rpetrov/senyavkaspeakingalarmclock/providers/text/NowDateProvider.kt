@@ -95,6 +95,10 @@ class NowDateProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.provide
 
     }
 
+    override fun getConfigLayout(): Int {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getPermissions(): Array<String> = arrayOf()
 
     override fun getName() = "Дата"

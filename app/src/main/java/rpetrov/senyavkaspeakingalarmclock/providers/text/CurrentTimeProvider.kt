@@ -40,6 +40,11 @@ class CurrentTimeProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.pro
         return rpetrov.senyavkaspeakingalarmclock.providers.Utils.getCorrectWordForDigit(m, " минута", " минуты", " минут", " минут")
     }
 
+
+    override fun getConfigLayout(): Int {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getPermissions(): Array<String> = arrayOf()
 
     override fun getName() = "Время"

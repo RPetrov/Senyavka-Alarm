@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.provider.MediaStore
+import rpetrov.senyavkaspeakingalarmclock.R
 
 
 /**
@@ -35,6 +36,7 @@ class MusicProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.providers
         }
     }
 
+    override fun getConfigLayout(): Int = R.xml.music
 
     override fun getPermissions(): Array<String> = emptyArray()
 

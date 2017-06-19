@@ -131,12 +131,16 @@ class WeatherProvider : BaseProvider, ITextProvider {
 
     }
 
+    override fun getConfigLayout(): Int {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getPermissions(): Array<String> = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
     override fun getName() = "Погода"
 
     override fun getDescription() = ""
 
-    override fun isConfigurable() = false
+    override fun isConfigurable() = true // todo setup default location!
 
 }

@@ -32,6 +32,12 @@
             android:label="@string/title_activity_alarm"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".SettingsActivity"
+            android:label="Настройки"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <receiver android:name=".AlarmBroadcastReceiver"/>
     </application>
 

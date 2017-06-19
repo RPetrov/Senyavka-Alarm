@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 import butterknife.bindView
 import rpetrov.senyavkaspeakingalarmclock.providers.ProvidersFactory
@@ -86,6 +87,19 @@ class MainActivity : AppCompatActivity() {
                         providers[position].enable(isChecked)
                     }
                 })
+
+                if(providers[position].isConfigurable()){
+                    view.setOnClickListener(object: View.OnClickListener {
+                        override fun onClick(v: View?) {
+                            val i = Intent(this@MainActivity, SettingsActivity::class.java)
+                            i.putExtra("LAYOUT", providers[position].getConfigLayout())
+                            startActivity(i)
+                        }
+                    })
+                } else{
+                    view.setOnClickListener(null)
+                }
+
                 // enable
 
                 return view
