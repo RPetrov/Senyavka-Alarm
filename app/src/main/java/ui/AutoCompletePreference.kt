@@ -1,7 +1,10 @@
 package ui
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.AsyncTask
 import android.preference.EditTextPreference
+import android.preference.PreferenceManager
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -22,55 +25,74 @@ class AutoCompletePreference(context: Context, attrs: AttributeSet) : EditTextPr
         val lan: Float
         val lon: Float
         val area: String
+        val printVersion: String
 
         constructor(city: String, lan: Float, lon: Float, area: String) {
             this.city = city
             this.lan = lan
             this.lon = lon
             this.area = area
+            this.printVersion = city + ", " + area
         }
 
         override fun toString(): String {
-            return  city + ", " + area
+            return printVersion
         }
     }
 
-    private var cities: ArrayList<City> = ArrayList()
     private val mEditText: AutoCompleteTextView = AutoCompleteTextView(context, attrs)
+
+    val cities: ArrayList<City> = ArrayList()
 
     init {
 
 
-        var reader: BufferedReader? = null
-        try {
-            reader = BufferedReader(
-                    InputStreamReader(getContext().assets.open("ru-list.csv"), "UTF-8"))
+        val at: AsyncTask<Void, Void, ArrayList<City>> = object : AsyncTask<Void, Void, ArrayList<City>>() {
+            override fun doInBackground(vararg params: Void?): ArrayList<City>? {
 
-            // do reading, usually loop until end of file reading
-            var mLine: String?
 
-            while (true) {
-                mLine = reader.readLine()
-                if (mLine == null) break
+                var reader: BufferedReader? = null
+                try {
+                    reader = BufferedReader(
+                            InputStreamReader(getContext().assets.open("ru-list.csv"), "UTF-8"))
 
-                val splitted = mLine.split(";")
-                cities.add(City(splitted[2], splitted[3].toFloat(), splitted[4].toFloat(), splitted[1] + ", " + splitted[0]))
+                    // do reading, usually loop until end of file reading
+                    var mLine: String?
+
+                    while (true) {
+                        mLine = reader.readLine()
+                        if (mLine == null) break
+
+                        val splitted = mLine.split(";")
+                        cities.add(City(splitted[2], splitted[3].toFloat(), splitted[4].toFloat(), splitted[1] + ", " + splitted[0]))
+
+                    }
+
+                    return cities
+
+
+                } catch (e: IOException) {
+
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close()
+                        } catch (e: IOException) {
+                        }
+                    }
+                }
+
+                return null
             }
 
-            mEditText.threshold = 0
-            val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, cities)
-            mEditText.setAdapter(adapter)
-
-        } catch (e: IOException) {
-
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close()
-                } catch (e: IOException) {
-                }
+            override fun onPostExecute(result: ArrayList<City>?) {
+                mEditText.threshold = 0
+                val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, result)
+                mEditText.setAdapter(adapter)
             }
         }
+
+        at.execute()
 
     }
 
@@ -87,6 +109,7 @@ class AutoCompletePreference(context: Context, attrs: AttributeSet) : EditTextPr
             onAddEditTextToDialogView(view, editText)
         }
 
+
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -95,6 +118,18 @@ class AutoCompletePreference(context: Context, attrs: AttributeSet) : EditTextPr
             if (callChangeListener(value)) {
                 text = value
             }
+
+            val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+            val city = cities.firstOrNull() { city -> city.printVersion.equals(text) }
+            sp.edit().putString("weather_city", text).apply()
+            if (city != null) {
+                sp.edit().putFloat("weather_lan", city.lan).putFloat("weather_lon", city.lon).apply()
+            } else {
+                sp.edit().putFloat("weather_lan", -1f).putFloat("weather_lon", -1f).apply()
+            }
+
+
         }
     }
 }

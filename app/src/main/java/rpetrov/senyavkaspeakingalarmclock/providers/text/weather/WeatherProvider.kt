@@ -2,8 +2,10 @@ package rpetrov.senyavkaspeakingalarmclock.providers.text.weather
 
 import android.Manifest
 import android.content.Context
+import android.content.SharedPreferences
 import android.location.Location
 import android.os.Bundle
+import android.preference.PreferenceManager
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
@@ -23,7 +25,9 @@ import java.util.*
  */
 
 
-const val URL: String = "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&APPID=74e5ddb61377cec9465df223711dddce&lang=ru&units=metric"
+const val URL: String = "http://api.openweathermap.org/data/2.5/weather?%s&APPID=74e5ddb61377cec9465df223711dddce&lang=ru&units=metric"
+const val PARAM_LOCATION: String = "lat=%s&lon=%s"
+const val PARAM_CITY: String = "q=%s"
 
 class WeatherProvider : BaseProvider, ITextProvider {
 
@@ -64,9 +68,17 @@ class WeatherProvider : BaseProvider, ITextProvider {
                                             getWeatherByLocation(p0)
                                         else{
                                             val loc = Location("MY_LOC")
-                                            loc.latitude = 59.932847
-                                            loc.longitude = 30.269849
-                                            getWeatherByLocation(loc)
+                                            val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                                            loc.latitude = sp.getFloat("weather_lan", -1f).toDouble()
+                                            loc.longitude = sp.getFloat("weather_lon", -1f).toDouble()
+
+                                            if(loc.latitude == -1.0 || loc.longitude == -1.0){
+                                                getWeatherByAddress(sp.getString("weather_city", null))
+                                            } else{
+                                                getWeatherByLocation(loc)
+                                            }
+
+
                                         }
 
 
@@ -95,6 +107,19 @@ class WeatherProvider : BaseProvider, ITextProvider {
             lock.wait(10000)
         }
 
+        if(result == null){
+            val loc = Location("MY_LOC")
+            val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            loc.latitude = sp.getFloat("weather_lan", -1f).toDouble()
+            loc.longitude = sp.getFloat("weather_lon", -1f).toDouble()
+
+            if(loc.latitude == -1.0 || loc.longitude == -1.0){
+                getWeatherByAddress(sp.getString("weather_city", null))
+            } else{
+                getWeatherByLocation(loc)
+            }
+        }
+
 
         return result != null
     }
@@ -104,7 +129,22 @@ class WeatherProvider : BaseProvider, ITextProvider {
 
         Thread(Runnable {
             val gson: Gson = Gson()
-            result = gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, location.latitude, location.longitude)).openStream())), Result::class.java)
+            val param = String.format(PARAM_LOCATION, location.latitude, location.longitude)
+            result = gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, param)).openStream())), Result::class.java)
+
+            synchronized(lock) {
+                lock.notifyAll()
+            }
+        }).start()
+
+    }
+
+    private fun getWeatherByAddress(city: String) {
+
+        Thread(Runnable {
+            val gson: Gson = Gson()
+            val param = String.format(PARAM_CITY, city)
+            result = gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, param)).openStream())), Result::class.java)
 
             synchronized(lock) {
                 lock.notifyAll()
