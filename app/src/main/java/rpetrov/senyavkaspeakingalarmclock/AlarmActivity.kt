@@ -26,6 +26,8 @@ class AlarmActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+
+
         super.onCreate(savedInstanceState)
 
         val o = getSystemService(Context.POWER_SERVICE);

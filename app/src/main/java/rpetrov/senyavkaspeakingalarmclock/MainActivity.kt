@@ -58,10 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
-
-        Thread(Runnable { WeatherProvider(this).prepare() }).start()
-
-
+        Thread(Runnable { Cities.Cities.init(this) }).start()
 
         providersListView.adapter = object : BaseAdapter() {
 
