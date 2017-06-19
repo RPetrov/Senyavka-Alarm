@@ -10,6 +10,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import com.ibm.icu.text.RuleBasedNumberFormat
+import rpetrov.senyavkaspeakingalarmclock.R
 import rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider
 import rpetrov.senyavkaspeakingalarmclock.providers.Utils
 import rpetrov.senyavkaspeakingalarmclock.providers.text.BaseProvider
@@ -131,15 +132,13 @@ class WeatherProvider : BaseProvider, ITextProvider {
 
     }
 
-    override fun getConfigLayout(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getConfigLayout(): Int  = R.xml.weather
 
     override fun getPermissions(): Array<String> = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
     override fun getName() = "Погода"
 
-    override fun getDescription() = ""
+    override fun getDescription() = "Сообщает о погоде за окном"
 
     override fun isConfigurable() = true // todo setup default location!
 
