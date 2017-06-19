@@ -1,5 +1,6 @@
 package rpetrov.senyavkaspeakingalarmclock.providers.text.weather
 
+import android.Manifest
 import android.content.Context
 import android.location.Location
 import android.os.Bundle
@@ -130,7 +131,7 @@ class WeatherProvider : BaseProvider, ITextProvider {
 
     }
 
-    override fun getPermissions(): Array<String> = arrayOf()
+    override fun getPermissions(): Array<String> = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
     override fun getName() = "Погода"
 

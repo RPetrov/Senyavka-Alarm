@@ -116,20 +116,18 @@ class MainActivity : AppCompatActivity() {
 
         val permissions: ArrayList<String> = ArrayList<String>()
 
+        val providers = ProvidersFactory.getAll(this@MainActivity)
 
-        // todo get from providers
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        for(p in providers){
 
-            permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
+            for(permission in p.getPermissions()){
+                if (ContextCompat.checkSelfPermission(this,
+                        permission)
+                        != PackageManager.PERMISSION_GRANTED) {
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CALENDAR)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            permissions.add(Manifest.permission.READ_CALENDAR)
+                    permissions.add(permission)
+                }
+            }
         }
 
         if (!permissions.isEmpty()) {
