@@ -112,6 +112,12 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
                             tts?.speak(items[i], TextToSpeech.QUEUE_ADD, myHashAlarm)
                         }
 
+                        if(items.isEmpty()){
+                            for (i in runnableProviders) {
+                                i.run()
+                            }
+                        }
+
                     } else {
                         Log.e("TTS", "Ошибка!")
                     }

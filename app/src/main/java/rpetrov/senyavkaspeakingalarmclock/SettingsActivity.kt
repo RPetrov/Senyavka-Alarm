@@ -9,13 +9,15 @@ import android.preference.PreferenceManager
 /**
  * Created by Roman Petrov
  */
-class SettingsActivity : PreferenceActivity() {
+class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(intent.getIntExtra("LAYOUT", -1))
 
         updateSummariesForDatabaseConfig()
+
+
     }
 
 
@@ -27,5 +29,19 @@ class SettingsActivity : PreferenceActivity() {
             preference.summary = (sp.all.get(preference.key)).toString()
 
         }
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        updateSummariesForDatabaseConfig()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 }

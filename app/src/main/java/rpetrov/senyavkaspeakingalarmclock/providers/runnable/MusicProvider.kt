@@ -18,19 +18,24 @@ class MusicProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.providers
 
     override fun run() {
         val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        if (sp.getBoolean("checkBoxMusic.isChecked", false))
-            playSearchArtist(sp.getString("playlist", null))
-    }
+        val type = sp.getString("music_type", null)
+        val name = sp.getString("music_name", null)
 
-    private fun playSearchArtist(playlist: String?) {
-
-        playlist ?: return
+        type ?: return
+        name ?: return
 
         val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
         intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS,
                 MediaStore.Audio.Artists.ENTRY_CONTENT_TYPE)
-        intent.putExtra(MediaStore.EXTRA_MEDIA_PLAYLIST, playlist)
-        intent.putExtra(SearchManager.QUERY, playlist)
+        intent.putExtra(when (type) {
+            "Плейлист" -> MediaStore.EXTRA_MEDIA_PLAYLIST
+            "Исполнитель" -> MediaStore.EXTRA_MEDIA_ARTIST
+            "Альбом" -> MediaStore.EXTRA_MEDIA_ALBUM
+            "Жанр" -> MediaStore.EXTRA_MEDIA_GENRE
+            "Радио" -> MediaStore.EXTRA_MEDIA_RADIO_CHANNEL
+            else -> return
+        }, name)
+        intent.putExtra(SearchManager.QUERY, name)
         if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(intent)
         }
