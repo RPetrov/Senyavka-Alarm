@@ -14,6 +14,10 @@ import java.util.*
 import android.view.WindowManager
 import rpetrov.senyavkaspeakingalarmclock.providers.ProviderBuildTask
 import rpetrov.senyavkaspeakingalarmclock.providers.ProvidersFactory
+import android.speech.tts.TextToSpeech
+import android.media.AudioManager.STREAM_MUSIC
+import android.media.AudioManager
+import android.media.AudioManager.STREAM_ALARM
 
 
 class AlarmActivity : AppCompatActivity() {
@@ -29,6 +33,11 @@ class AlarmActivity : AppCompatActivity() {
 
 
         super.onCreate(savedInstanceState)
+
+        val am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val vol = am.getStreamVolume(STREAM_ALARM)
+        am.setStreamVolume(STREAM_ALARM, vol, 0)
+
 
         val o = getSystemService(Context.POWER_SERVICE);
         if(o is PowerManager){
