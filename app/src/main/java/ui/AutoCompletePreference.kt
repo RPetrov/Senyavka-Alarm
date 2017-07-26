@@ -2,14 +2,18 @@ package ui
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Handler
+import android.os.Looper
 import android.preference.EditTextPreference
 import android.preference.PreferenceManager
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import rpetrov.senyavkaspeakingalarmclock.Cities
+import rpetrov.senyavkaspeakingalarmclock.Application
+import rpetrov.senyavkaspeakingalarmclock.database.dto.City
 
 
 /**
@@ -17,39 +21,27 @@ import rpetrov.senyavkaspeakingalarmclock.Cities
  */
 class AutoCompletePreference(context: Context, attrs: AttributeSet) : EditTextPreference(context, attrs) {
 
-    class City {
-        val city: String
-        val lan: Float
-        val lon: Float
-        val area: String
-        val printVersion: String
-
-        constructor(city: String, lan: Float, lon: Float, area: String) {
-            this.city = city
-            this.lan = lan
-            this.lon = lon
-            this.area = area
-            this.printVersion = city + ", " + area
-        }
-
-        override fun toString(): String {
-            return printVersion
-        }
-    }
 
     private val mEditText: AutoCompleteTextView = AutoCompleteTextView(context, attrs)
-
+    private var currentCity: City? = null
+    private var cities: List<City> = ArrayList()
 
 
     init {
-        mEditText.threshold = 0
-        val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, Cities.Cities.cities)
+        mEditText.threshold = 3
+        val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, ArrayList<City>())
+
+
+        Thread(Runnable {
+            cities = Application.instance().citiesDao.queryForAll()
+            Handler(Looper.getMainLooper()).post { adapter.addAll(cities) }
+        }).start()
         mEditText.setAdapter(adapter)
     }
 
     override fun onBindDialogView(view: View) {
         val editText = mEditText
-        editText!!.setText(text)
+        editText.setText(text)
         editText.setSelection(text.length)
 
         val oldParent = editText.parent
@@ -58,6 +50,12 @@ class AutoCompletePreference(context: Context, attrs: AttributeSet) : EditTextPr
                 (oldParent as ViewGroup).removeView(editText)
             }
             onAddEditTextToDialogView(view, editText)
+        }
+
+        mEditText.onItemClickListener = object : AdapterView.OnItemClickListener {
+            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                currentCity = parent!!.getItemAtPosition(position) as City
+            }
         }
 
 
@@ -72,10 +70,10 @@ class AutoCompletePreference(context: Context, attrs: AttributeSet) : EditTextPr
 
             val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-            val city = Cities.Cities.cities.firstOrNull { city -> city.printVersion.equals(text) }
+
             sp.edit().putString("weather_city", text).apply()
-            if (city != null) {
-                sp.edit().putFloat("weather_lan", city.lan).putFloat("weather_lon", city.lon).apply()
+            if (currentCity.toString() == text) {
+                sp.edit().putFloat("weather_lan", currentCity!!.lat).putFloat("weather_lon", currentCity!!.lon).apply()
             } else {
                 sp.edit().putFloat("weather_lan", -1f).putFloat("weather_lon", -1f).apply()
             }

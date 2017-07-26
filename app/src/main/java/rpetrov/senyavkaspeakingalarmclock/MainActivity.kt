@@ -58,8 +58,6 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
-        Thread(Runnable { Cities.Cities.init(this) }).start()
-
         providersListView.adapter = object : BaseAdapter() {
 
             val providers = ProvidersFactory.getAll(this@MainActivity)
