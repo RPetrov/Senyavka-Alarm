@@ -165,7 +165,7 @@ class WeatherProvider : BaseProvider, ITextProvider {
             val windVar:Wind = res.wind
 
             val ruleBasedNumberFormat = RuleBasedNumberFormat(Locale("ru"), RuleBasedNumberFormat.SPELLOUT)
-            text+= " Скорость ветра " + ruleBasedNumberFormat.format(windVar.speed) + Utils.getCorrectWordForDigit(windVar.speed.toInt(), " метр", " метра", " метров", " метров") + " в секунду."
+            text+= " Скорость ветра " + ruleBasedNumberFormat.format(windVar.speed.toInt()) + Utils.getCorrectWordForDigit(windVar.speed.toInt(), " метр", " метра", " метров", " метров") + " в секунду."
         }
 
         return text
