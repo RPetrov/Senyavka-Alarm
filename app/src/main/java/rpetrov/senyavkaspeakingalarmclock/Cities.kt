@@ -27,7 +27,7 @@ class Cities {
                     if (mLine == null) break
 
                     val splitted = mLine.split(";")
-                    cities.add(AutoCompletePreference.City(splitted[2], splitted[3].toFloat(), splitted[4].toFloat(), splitted[1] + ", " + splitted[0]))
+                    cities.add(AutoCompletePreference.City(splitted[2], splitted[4].toFloat(), splitted[3].toFloat(), splitted[1] + ", " + splitted[0]))
 
                 }
 
