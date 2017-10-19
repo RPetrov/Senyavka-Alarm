@@ -8,7 +8,7 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.TextView
-import butterknife.bindView
+import rpetrov.senyavkaspeakingalarmclock.kotterknife.*
 import java.text.SimpleDateFormat
 import java.util.*
 import android.view.WindowManager

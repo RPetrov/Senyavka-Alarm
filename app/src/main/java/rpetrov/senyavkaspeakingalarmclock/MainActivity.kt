@@ -18,7 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import butterknife.bindView
+import rpetrov.senyavkaspeakingalarmclock.kotterknife.*
 import rpetrov.senyavkaspeakingalarmclock.providers.ProvidersFactory
 import java.text.SimpleDateFormat
 import java.util.*
