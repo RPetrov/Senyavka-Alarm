@@ -75,6 +75,7 @@ class AlarmActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        wakeLock?.release()
+        if(wakeLock?.isHeld!!)
+            wakeLock?.release()
     }
 }

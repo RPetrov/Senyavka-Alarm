@@ -104,7 +104,7 @@ class WeatherProvider : BaseProvider, ITextProvider {
         mGoogleApiClient.connect()
 
         synchronized(lock) {
-            lock.wait(30000)
+            lock.wait(90000)
         }
 
         if(result == null){

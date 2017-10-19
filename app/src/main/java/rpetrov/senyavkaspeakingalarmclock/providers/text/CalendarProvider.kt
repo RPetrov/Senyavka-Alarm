@@ -43,7 +43,7 @@ class CalendarProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.provid
 
     override fun getText(): String {
 
-        val ruleBasedNumberFormat = com.ibm.icu.text.RuleBasedNumberFormat(java.util.Locale("ru"), RuleBasedNumberFormat.SPELLOUT)
+       // val ruleBasedNumberFormat = com.ibm.icu.text.RuleBasedNumberFormat(java.util.Locale("ru"), RuleBasedNumberFormat.SPELLOUT)
 
 
         return "На сегодня заплонировано " + count + rpetrov.senyavkaspeakingalarmclock.providers.Utils.getCorrectWordForDigit(count, " событие", " события", " событий", " событий")
