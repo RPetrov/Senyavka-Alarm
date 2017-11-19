@@ -7,7 +7,7 @@ android {
         ReleaseKey {
             keyAlias 'senyavka_key'
             keyPassword 'wWVS0mUq'
-            storeFile file('/home/rpetrov/work/SenyavkaSpeakingAlarmClock/key.jks')
+            storeFile file('../key.jks')
             storePassword 'PvjWvwAN'
         }
     }
