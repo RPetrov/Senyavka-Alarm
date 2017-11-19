@@ -5,9 +5,11 @@
 
 
     <string-array name="music_types_values">
-        <item>Плейлист</item>
+        <!--<item>Плейлист</item>-->
+        <item>Поиск</item>
         <item>Исполнитель</item>
         <item>Альбом</item>
+        <item>Песня</item>
         <item>Жанр</item>
         <item>Радио</item>
     </string-array>
