@@ -33,7 +33,7 @@ class WeatherProvider : BaseProvider, ITextProvider {
 
 
 
-    private val lock = java.lang.Object()
+   // private val lock = java.lang.Object()
     var result: Result? = null
 
     constructor(context: Context) : super(context)
@@ -41,83 +41,83 @@ class WeatherProvider : BaseProvider, ITextProvider {
 
     override fun prepare(): Boolean  {
 
-        var mGoogleApiClient: GoogleApiClient? = null
+//        var mGoogleApiClient: GoogleApiClient? = null
+//
+//        mGoogleApiClient = GoogleApiClient.Builder(context)
+//                .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+//                    override fun onConnected(p0: Bundle?) {
+//                        val mLastLocation = try {
+//                            LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient)
+//                        }  catch (e: SecurityException) { null }
+//
+//                        if (mLastLocation != null) {
+//
+//                            getWeatherByLocation(mLastLocation)
+//
+//                        } else {
+//
+//                            val mLocationRequest = LocationRequest()
+//                            mLocationRequest.interval = 10000
+//                            mLocationRequest.fastestInterval = 5000
+//                            mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+//
+//                            try {
+//                                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, object : LocationListener {
+//                                    override fun onLocationChanged(p0: Location?) {
+//                                        if(p0 != null)
+//                                            getWeatherByLocation(p0)
+//                                        else{
+//                                            val loc = Location("MY_LOC")
+//                                            val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+//                                            loc.latitude = sp.getFloat("weather_lan", -1f).toDouble()
+//                                            loc.longitude = sp.getFloat("weather_lon", -1f).toDouble()
+//
+//                                            if(loc.latitude == -1.0 || loc.longitude == -1.0){
+//                                                getWeatherByAddress(sp.getString("weather_city", null))
+//                                            } else{
+//                                                getWeatherByLocation(loc)
+//                                            }
+//
+//
+//                                        }
+//
+//
+//                                        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
+//                                    }
+//                                })
+//                            } catch(e: SecurityException) {
+//                                synchronized(lock) {
+//                                    lock.notifyAll()
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    override fun onConnectionSuspended(p0: Int) {
+//                        System.out.print(p0)
+//                    }
+//                })
+//                .addOnConnectionFailedListener({ })
+//                .addApi(LocationServices.API)
+//                .build()
+//
+//        mGoogleApiClient.connect()
 
-        mGoogleApiClient = GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                    override fun onConnected(p0: Bundle?) {
-                        val mLastLocation = try {
-                            LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient)
-                        }  catch (e: SecurityException) { null }
-
-                        if (mLastLocation != null) {
-
-                            getWeatherByLocation(mLastLocation)
-
-                        } else {
-
-                            val mLocationRequest = LocationRequest()
-                            mLocationRequest.interval = 10000
-                            mLocationRequest.fastestInterval = 5000
-                            mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-
-                            try {
-                                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, object : LocationListener {
-                                    override fun onLocationChanged(p0: Location?) {
-                                        if(p0 != null)
-                                            getWeatherByLocation(p0)
-                                        else{
-                                            val loc = Location("MY_LOC")
-                                            val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                                            loc.latitude = sp.getFloat("weather_lan", -1f).toDouble()
-                                            loc.longitude = sp.getFloat("weather_lon", -1f).toDouble()
-
-                                            if(loc.latitude == -1.0 || loc.longitude == -1.0){
-                                                getWeatherByAddress(sp.getString("weather_city", null))
-                                            } else{
-                                                getWeatherByLocation(loc)
-                                            }
-
-
-                                        }
-
-
-                                        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
-                                    }
-                                })
-                            } catch(e: SecurityException) {
-                                synchronized(lock) {
-                                    lock.notifyAll()
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onConnectionSuspended(p0: Int) {
-                        System.out.print(p0)
-                    }
-                })
-                .addOnConnectionFailedListener({ })
-                .addApi(LocationServices.API)
-                .build()
-
-        mGoogleApiClient.connect()
-
-        synchronized(lock) {
-            lock.wait(90000)
-        }
+//        synchronized(lock) {
+//            lock.wait(90000)
+//        }
 
         if(result == null){
-            val loc = Location("MY_LOC")
+//            val loc = Location("MY_LOC")
             val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            loc.latitude = sp.getFloat("weather_lan", -1f).toDouble()
-            loc.longitude = sp.getFloat("weather_lon", -1f).toDouble()
+//            loc.latitude = sp.getFloat("weather_lan", -1f).toDouble()
+//            loc.longitude = sp.getFloat("weather_lon", -1f).toDouble()
 
-            if(loc.latitude == -1.0 || loc.longitude == -1.0){
-                getWeatherByAddress(sp.getString("weather_city", null))
-            } else{
-                getWeatherByLocation(loc)
-            }
+ //           if(loc.latitude == -1.0 || loc.longitude == -1.0){
+ //               result = getWeatherByAddress(sp.getString("weather_city", "Saint-Petersburg"))
+ //           } else{
+                result = getWeatherByLocation()
+//            }
         }
 
 
@@ -125,32 +125,18 @@ class WeatherProvider : BaseProvider, ITextProvider {
     }
 
 
-    private fun getWeatherByLocation(location: Location) {
+    private fun getWeatherByLocation() : Result{
+        val gson: Gson = Gson()
+        val param = String.format(PARAM_LOCATION, 59.934788, 30.275356)
+        return gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, param)).openStream())), Result::class.java)
 
-        Thread(Runnable {
-            val gson: Gson = Gson()
-            val param = String.format(PARAM_LOCATION, location.latitude, location.longitude)
-            result = gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, param)).openStream())), Result::class.java)
-
-            synchronized(lock) {
-                lock.notifyAll()
-            }
-        }).start()
 
     }
 
-    private fun getWeatherByAddress(city: String) {
-
-        Thread(Runnable {
-            val gson: Gson = Gson()
-            val param = String.format(PARAM_CITY, city)
-            result = gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, param)).openStream())), Result::class.java)
-
-            synchronized(lock) {
-                lock.notifyAll()
-            }
-        }).start()
-
+    private fun getWeatherByAddress(city: String) : Result {
+        val gson: Gson = Gson()
+        val param = String.format(PARAM_CITY, city)
+        return gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, param)).openStream())), Result::class.java)
     }
 
     override fun getText(): String {
