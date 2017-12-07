@@ -222,9 +222,11 @@ class MainActivity : AppCompatActivity() {
 
 
         if(BuildConfig.DEBUG){
-            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi)
+            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 5000, pi), pi)
+            //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi)
         } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(calendar.timeInMillis, pi), pi)
+           // alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
         }
 
         Toast.makeText(this, "Будильник установлен на " + SimpleDateFormat("HH:mm").format(calendar.time), Toast.LENGTH_LONG).show()
