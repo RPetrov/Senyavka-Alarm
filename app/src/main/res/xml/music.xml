@@ -1,17 +1,20 @@
-<PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- opens a subscreen of settings -->
 
     <ListPreference
-        android:defaultValue="Плейлист"
-        android:title="Тип медиа"
+        android:defaultValue="А"
         android:entries="@array/music_types_values"
         android:entryValues="@array/music_types_values"
         android:key="music_type"
-         />
+        android:title="Тип медиа" />
 
     <EditTextPreference
         android:defaultValue="Piano"
         android:key="music_name"
         android:title="Имя" />
+
+    <ui.TryMusicPreference
+        android:key="music_try" android:title="Попробовать"/>
+
 
 </PreferenceScreen>
