@@ -18,7 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import rpetrov.senyavkaspeakingalarmclock.kotterknife.*
+import rpetrov.senyavkaspeakingalarmclock.kotterknife.bindView
 import rpetrov.senyavkaspeakingalarmclock.providers.ProvidersFactory
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,7 +37,9 @@ class MainActivity : AppCompatActivity() {
     var hours: Int = 0
     var minutes: Int = 0
 
-    val state: State? = null
+
+    val alarmManager: AlarmManager
+        get() = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     override fun onStart() {
         super.onStart()// restore state
@@ -53,8 +55,8 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
-        if(BuildConfig.DEBUG)
-            supportActionBar?.title =  "DEBUG" + supportActionBar?.title
+        if (BuildConfig.DEBUG)
+            supportActionBar?.title = "DEBUG" + supportActionBar?.title
 
         checkPermissions()
 
@@ -80,21 +82,21 @@ class MainActivity : AppCompatActivity() {
                 (enable as CheckBox).isChecked = providers[position].isEnable()
                 settings.isEnabled = providers[position].isConfigurable()
 
-                enable.setOnCheckedChangeListener(object: CompoundButton.OnCheckedChangeListener {
+                enable.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
                     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                         providers[position].enable(isChecked)
                     }
                 })
 
-                if(providers[position].isConfigurable()){
-                    view.setOnClickListener(object: View.OnClickListener {
+                if (providers[position].isConfigurable()) {
+                    view.setOnClickListener(object : View.OnClickListener {
                         override fun onClick(v: View?) {
                             val i = Intent(this@MainActivity, SettingsActivity::class.java)
                             i.putExtra("LAYOUT", providers[position].getConfigLayout())
                             startActivity(i)
                         }
                     })
-                } else{
+                } else {
                     view.setOnClickListener(null)
                 }
 
@@ -121,7 +123,16 @@ class MainActivity : AppCompatActivity() {
 
         time.text = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes)
 
-        enableAlarm.isChecked = sp.getBoolean("enableAlarm.isChecked", false)
+
+        enableAlarm.setOnCheckedChangeListener(null)
+        enableAlarm.isChecked = alarmManager.nextAlarmClock != null
+        enableAlarm.setOnCheckedChangeListener({ buttonView, isChecked ->
+            if (enableAlarm.isChecked) {
+                setUpAlarm()
+            } else {
+                cancelAlarm()
+            }
+        })
     }
 
     private fun checkPermissions() {
@@ -130,9 +141,9 @@ class MainActivity : AppCompatActivity() {
 
         val providers = ProvidersFactory.getAll(this@MainActivity)
 
-        for(p in providers){
+        for (p in providers) {
 
-            for(permission in p.getPermissions()){
+            for (permission in p.getPermissions()) {
                 if (ContextCompat.checkSelfPermission(this,
                         permission)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -183,32 +194,28 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (enableAlarm.isChecked) {
-            setUpAlarm(hours, minutes)
-        } else {
-            cancelAlarm()
-        }
-
         val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putInt("hours", hours).apply()
         sp.edit().putInt("minutes", minutes).apply()
-        sp.edit().putBoolean("enableAlarm.isChecked", enableAlarm.isChecked).apply()
     }
 
 
     private fun cancelAlarm() {
-        val i = Intent(this, AlarmBroadcastReceiver::class.java)
-        val pi = PendingIntent.getBroadcast(this, 0, i, 0)
+        val info = alarmManager.nextAlarmClock
 
-        val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(pi)
+        if(info != null){
+            alarmManager.cancel(info.showIntent)
+            Toast.makeText(this, "Отменено", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
-    fun setUpAlarm(hourOfDay: Int, minute: Int): Unit {
+    fun setUpAlarm(): Unit {
+
         val calendar: Calendar = Calendar.getInstance()
         val now: Calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-        calendar.set(Calendar.MINUTE, minute)
+        calendar.set(Calendar.HOUR_OF_DAY, hours)
+        calendar.set(Calendar.MINUTE, minutes)
 
         if (calendar.before(now)) {
             calendar.timeInMillis += 24 * 60 * 60 * 1000 // add one day
@@ -218,15 +225,14 @@ class MainActivity : AppCompatActivity() {
         val pi = PendingIntent.getBroadcast(this, 7, i, 0)
 
 
-        val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
 
-        if(BuildConfig.DEBUG){
-            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 5000, pi), pi)
+        if (BuildConfig.DEBUG) {
+            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 30000, pi), pi)
             //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi)
         } else {
             alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(calendar.timeInMillis, pi), pi)
-           // alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+            // alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
         }
 
         Toast.makeText(this, "Будильник установлен на " + SimpleDateFormat("HH:mm").format(calendar.time), Toast.LENGTH_LONG).show()
