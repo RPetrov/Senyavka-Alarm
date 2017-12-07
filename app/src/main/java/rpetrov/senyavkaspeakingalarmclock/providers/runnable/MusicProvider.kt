@@ -28,11 +28,13 @@ class MusicProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.providers
         intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS,
                 MediaStore.Audio.Artists.ENTRY_CONTENT_TYPE)
         intent.putExtra(when (type) {
-            "Плейлист" -> MediaStore.EXTRA_MEDIA_PLAYLIST
+          //  "Плейлист" -> MediaStore.EXTRA_MEDIA_PLAYLIST
+            "Поиск" -> SearchManager.QUERY
             "Исполнитель" -> MediaStore.EXTRA_MEDIA_ARTIST
             "Альбом" -> MediaStore.EXTRA_MEDIA_ALBUM
             "Жанр" -> MediaStore.EXTRA_MEDIA_GENRE
             "Радио" -> MediaStore.EXTRA_MEDIA_RADIO_CHANNEL
+            "Песня" -> MediaStore.EXTRA_MEDIA_TITLE
             else -> return
         }, name)
         intent.putExtra(SearchManager.QUERY, name)

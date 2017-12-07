@@ -40,6 +40,7 @@ class AutoCompletePreference(context: Context, attrs: AttributeSet) : EditTextPr
     }
 
     override fun onBindDialogView(view: View) {
+        super.onBindDialogView(view)
         val editText = mEditText
         editText.setText(text)
         editText.setSelection(text.length)
