@@ -21,14 +21,45 @@ class CurrentTimeProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.pro
         val minutes = now.get(java.util.Calendar.MINUTE)
 
 
-        val stringResult: String = if (hours in 6..12 && now.get(java.util.Calendar.MINUTE) == 0) {
-            "Сейчас уже " + now.get(java.util.Calendar.HOUR_OF_DAY) + " " + getHour(now.get(java.util.Calendar.HOUR_OF_DAY)) + " утра."
+        val stringResult: String = if (hours == 12 && minutes == 0) {
+            return "Полдень"
+        } else if (hours in 6..12 && minutes == 0) {
+            "Сейчас уже ${getTextByNumber(hours)} ${getHour(hours)} утра."
         } else {
-            "Сейчас уже " + now.get(java.util.Calendar.HOUR_OF_DAY) + " " + getHour(now.get(java.util.Calendar.HOUR_OF_DAY)) + ", " +
-                    +now.get(java.util.Calendar.MINUTE) + getMinutes(now.get(java.util.Calendar.MINUTE))
+            "Сейчас уже ${getTextByNumber(hours)} ${getHour(hours)}, $minutes ${getMinutes(minutes)}"
         }
 
         return stringResult
+    }
+
+    private fun getTextByNumber(number: Int): String {
+        return when (number) {
+            0 -> "Ноль"
+            1 -> "Один"
+            2 -> "Два"
+            3 -> "Три"
+            4 -> "Четыре"
+            5 -> "Пять"
+            6 -> "Шесть"
+            7 -> "Семь"
+            8 -> "Восемь"
+            9 -> "Девять"
+            10 -> "Десять"
+            11 -> "Одиннадцать"
+            12 -> "двенадцать"
+            13 -> "тринадцать"
+            14 -> "четырнадцать"
+            15 -> "пятнадцать"
+            16 -> "шестнадцать"
+            17 -> "семнадцать"
+            18 -> "восемнадцать"
+            19 -> "девятнадцать"
+            20 -> "двадцать"
+            21 -> "двадцать один"
+            22 -> "двадцать два"
+            23 -> "двадцать три"
+            else -> ""
+        }
     }
 
 
