@@ -46,7 +46,7 @@ class AlarmService : Service() {
                 .setContentIntent(pendingIntent)
                 .setTicker(getText(R.string.app_name))
               //  .setStyle(Notification.BigTextStyle().bigText("Much longer text that cannot fit one line..."))
-                .setPriority(Notification.PRIORITY_HIGH)
+                .setPriority(Notification.PRIORITY_MAX)
                 .addAction(-1, "Выключить",
                         pendingIntent)
                 .build()
