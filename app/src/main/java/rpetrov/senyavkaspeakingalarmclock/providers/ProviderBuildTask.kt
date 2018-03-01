@@ -70,7 +70,7 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
 
         if (cancel) return
 
-        vibrator.vibrate(longArrayOf(700, 300, 700, 300, 700, 300, 700, 300, 700, 1500), -1)
+        vibrator.vibrate(longArrayOf(700, 300, 700, 300, 700, 700), -1)
 
         val items = result
 
@@ -132,7 +132,7 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
             })
 
 
-        }, 6000)
+        }, 5000)
 
     }
 
