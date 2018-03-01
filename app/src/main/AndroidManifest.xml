@@ -41,6 +41,11 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <receiver android:name=".AlarmBroadcastReceiver"/>
+
+        <service
+            android:name=".AlarmService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

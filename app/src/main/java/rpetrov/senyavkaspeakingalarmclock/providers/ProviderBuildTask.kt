@@ -1,6 +1,7 @@
 package rpetrov.senyavkaspeakingalarmclock.providers
 
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.os.AsyncTask
 import android.os.Handler
@@ -9,6 +10,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import rpetrov.senyavkaspeakingalarmclock.AlarmService
 import java.util.*
 
 
@@ -92,6 +94,11 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
                                 for (i in runnableProviders) {
                                     i.run()
                                 }
+
+                                // stop service
+                                val stopServiceIntent = Intent(context, AlarmService::class.java)
+                                stopServiceIntent.putExtra("command", "stop")
+                                context.startService(stopServiceIntent)
                             }
 
                             override fun onError(utteranceId: String) {

@@ -207,7 +207,6 @@ class MainActivity : AppCompatActivity() {
             alarmManager.cancel(info.showIntent)
             Toast.makeText(this, "Отменено", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     fun setUpAlarm(): Unit {
@@ -228,7 +227,7 @@ class MainActivity : AppCompatActivity() {
 
 
         if (BuildConfig.DEBUG) {
-            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 30000, pi), pi)
+            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 5000, pi), pi)
             //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi)
         } else {
             alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(calendar.timeInMillis, pi), pi)

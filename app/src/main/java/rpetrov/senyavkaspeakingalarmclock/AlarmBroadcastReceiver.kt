@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.WindowManager
+import org.jetbrains.anko.intentFor
 
 
 /**
@@ -22,13 +23,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
          if(BuildConfig.DEBUG)
             Log.i("AlarmBroadcastReceiver", "Starting activity...")
 
-        val i = Intent(context, AlarmActivity::class.java)
-        i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//        i.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED +
-//                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD +
-//                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON +
-//                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-        context.startActivity(i)
+        context.startService(context.intentFor<AlarmService>())
 
 
     }
