@@ -99,6 +99,7 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
                                 val stopServiceIntent = Intent(context, AlarmService::class.java)
                                 stopServiceIntent.putExtra("command", "stop")
                                 context.startService(stopServiceIntent)
+                                tts?.shutdown()
                             }
 
                             override fun onError(utteranceId: String) {
@@ -141,6 +142,7 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
         cancel = true
         vibrator.cancel()
         tts?.stop()
+        tts?.shutdown()
 
     }
 

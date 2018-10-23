@@ -23,6 +23,9 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
          if(BuildConfig.DEBUG)
             Log.i("AlarmBroadcastReceiver", "Starting activity...")
 
+
+        val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putBoolean("enabled", false).apply()
         context.startService(context.intentFor<AlarmService>())
 
 

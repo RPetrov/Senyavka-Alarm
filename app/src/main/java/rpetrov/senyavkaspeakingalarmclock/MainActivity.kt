@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
@@ -36,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
     var hours: Int = 0
     var minutes: Int = 0
+    val EXTRA_ALARM_ID = "rpetrov.senyavkaspeakingalarmclock.EXTRA_ALARM_ID"
+    val id = 1
 
 
     val alarmManager: AlarmManager
@@ -125,14 +128,15 @@ class MainActivity : AppCompatActivity() {
 
 
         enableAlarm.setOnCheckedChangeListener(null)
-        enableAlarm.isChecked = alarmManager.nextAlarmClock != null
-        enableAlarm.setOnCheckedChangeListener({ buttonView, isChecked ->
+        enableAlarm.isChecked = sp.getBoolean("enabled", false)
+
+        enableAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             if (enableAlarm.isChecked) {
                 setUpAlarm()
             } else {
-                cancelAlarm()
+                cancel(alarmManager)
             }
-        })
+        }
     }
 
     private fun checkPermissions() {
@@ -145,7 +149,7 @@ class MainActivity : AppCompatActivity() {
 
             for (permission in p.getPermissions()) {
                 if (ContextCompat.checkSelfPermission(this,
-                        permission)
+                                permission)
                         != PackageManager.PERMISSION_GRANTED) {
 
                     permissions.add(permission)
@@ -190,6 +194,9 @@ class MainActivity : AppCompatActivity() {
         time.text = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute)
         this.hours = hourOfDay
         this.minutes = minute
+        if (enableAlarm.isChecked) {
+            setUpAlarm()
+        }
     }
 
     override fun onPause() {
@@ -197,19 +204,11 @@ class MainActivity : AppCompatActivity() {
         val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putInt("hours", hours).apply()
         sp.edit().putInt("minutes", minutes).apply()
+        sp.edit().putBoolean("enabled", enableAlarm.isChecked).apply()
     }
 
 
-    private fun cancelAlarm() {
-        val info = alarmManager.nextAlarmClock
-
-        if(info != null){
-            alarmManager.cancel(info.showIntent)
-            Toast.makeText(this, "Отменено", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    fun setUpAlarm(): Unit {
+    private fun setUpAlarm(): Unit {
 
         val calendar: Calendar = Calendar.getInstance()
         val now: Calendar = Calendar.getInstance()
@@ -220,22 +219,54 @@ class MainActivity : AppCompatActivity() {
             calendar.timeInMillis += 24 * 60 * 60 * 1000 // add one day
         }
 
-        val i = Intent(this, AlarmBroadcastReceiver::class.java)
-        val pi = PendingIntent.getBroadcast(this, 7, i, 0)
-
-
-
-
-        if (BuildConfig.DEBUG) {
-            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 5000, pi), pi)
-            //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi)
-        } else {
-            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(calendar.timeInMillis, pi), pi)
-            // alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
-        }
+        setAlarm(alarmManager, calendar.timeInMillis)
 
         Toast.makeText(this, "Будильник установлен на " + SimpleDateFormat("HH:mm").format(calendar.time), Toast.LENGTH_LONG).show()
 
+    }
+
+    /**
+     * The intent to fire when the alarm should ring.
+     *
+     * @param context       An active context instance.
+     * @return              A PendingIntent that will open the alert screen.
+     */
+    private fun getIntent(context: Context): PendingIntent {
+        val intent = Intent(context, AlarmBroadcastReceiver::class.java)
+        intent.putExtra(EXTRA_ALARM_ID, id)
+        return PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+
+    /**
+     * Schedule a time for the alarm to ring at.
+     *
+     * @param manager       The AlarmManager to schedule the alarm on.
+     * @param timeMillis    A UNIX timestamp specifying the next time for the alarm to ring.
+     */
+    private fun setAlarm(manager: AlarmManager, timeMillis: Long) {
+        val time = if (BuildConfig.DEBUG) {
+            System.currentTimeMillis() + 5000
+        } else {
+            timeMillis
+        }
+
+        manager.setAlarmClock(
+                AlarmManager.AlarmClockInfo(
+                        time,
+                        PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), 0)
+                ),
+                getIntent(this)
+        )
+    }
+
+    /**
+     * Cancel the next time for the alarm to ring.
+     *
+     * @param manager       The AlarmManager that the alarm was scheduled on.
+     */
+    private fun cancel(manager: AlarmManager) {
+        manager.cancel(getIntent(this))
     }
 
 
