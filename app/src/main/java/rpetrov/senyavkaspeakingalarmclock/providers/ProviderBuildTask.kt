@@ -59,7 +59,7 @@ class ProviderBuildTask : AsyncTask<Void, Void, List<String>> {
     override fun doInBackground(vararg voids: Void): List<String> =
             textProviders.filter {
                 try {
-                    return@filter it is ITextProvider && it.prepare()
+                    return@filter it.prepare()
                 } catch(e: Exception) {
                     return@filter false
                 }

@@ -76,13 +76,13 @@ class MainActivity : AppCompatActivity() {
                 if (view == null)
                     throw RuntimeException("View is null")
 
-                val name = view.findViewById(R.id.provider_name)
-                val desc = view.findViewById(R.id.provider_desc)
-                val enable = view.findViewById(R.id.provider_enable_box)
-                val settings = view.findViewById(R.id.provider_settings)
-                (name as TextView).text = providers[position].getName()
-                (desc as TextView).text = providers[position].getDescription()
-                (enable as CheckBox).isChecked = providers[position].isEnable()
+                val name : TextView = view.findViewById(R.id.provider_name)
+                val desc : TextView = view.findViewById(R.id.provider_desc)
+                val enable : CheckBox = view.findViewById(R.id.provider_enable_box)
+                val settings : ImageView= view.findViewById(R.id.provider_settings)
+                name.text = providers[position].getName()
+                desc.text = providers[position].getDescription()
+                enable.isChecked = providers[position].isEnable()
                 settings.isEnabled = providers[position].isConfigurable()
 
                 enable.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {

@@ -19,7 +19,7 @@ import android.media.AudioManager.STREAM_MUSIC
 import android.media.AudioManager
 import android.media.AudioManager.STREAM_ALARM
 
-
+@Deprecated("Use AlarmService")
 class AlarmActivity : AppCompatActivity() {
 
 
@@ -30,8 +30,6 @@ class AlarmActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-
-
         super.onCreate(savedInstanceState)
 
         val am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -39,11 +37,11 @@ class AlarmActivity : AppCompatActivity() {
         am.setStreamVolume(STREAM_ALARM, vol, 0)
 
 
-        val o = getSystemService(Context.POWER_SERVICE);
+        val o = getSystemService(Context.POWER_SERVICE)
         if(o is PowerManager){
             wakeLock = o.newWakeLock(PowerManager.FULL_WAKE_LOCK or
                     PowerManager.ACQUIRE_CAUSES_WAKEUP or
-                    PowerManager.ON_AFTER_RELEASE, "SEN_ALARM")
+                    PowerManager.ON_AFTER_RELEASE, "sen_alarm:lock_alarm")
 
             wakeLock?.acquire()
         }
@@ -54,7 +52,7 @@ class AlarmActivity : AppCompatActivity() {
                 + WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
 
 
-        setContentView(R.layout.activity_alarm)
+                 setContentView(R.layout.activity_alarm)
 
         val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putBoolean("enableAlarm.isChecked", false).apply()
