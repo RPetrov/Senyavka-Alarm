@@ -1,9 +1,7 @@
 <PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- opens a subscreen of settings -->
 
-    <EditTextPreference
-        android:defaultValue="Saint Petersburg"
-        android:key="weather_city"
-        android:title="Город/поселок по умолчанию (если GPS недоступен/выключен)" />
-
+    <ui.ChooseWeatherPreference
+        android:key="weather_location"
+        android:title="Локация по умолчанию (если GPS недоступен/выключен)" />
 </PreferenceScreen>

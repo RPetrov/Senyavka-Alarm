@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.preference.PreferenceManager
+import org.jetbrains.anko.intentFor
 
 
 /**
@@ -17,7 +18,6 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
 
         updateSummariesForDatabaseConfig()
 
-
     }
 
 
@@ -27,7 +27,6 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
         for (i in 0..preferenceScreen.preferenceCount - 1) {
             val preference = preferenceScreen.getPreference(i)
             preference.summary = (sp.all.get(preference.key)).toString()
-
         }
     }
 

@@ -101,7 +101,7 @@ class WeatherProvider : BaseProvider, ITextProvider {
 
     override fun getConfigLayout(): Int = R.xml.weather
 
-    override fun getPermissions(): Array<String> = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+    override fun getPermissions(): Array<String> = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     override fun getName() = "Погода"
 
