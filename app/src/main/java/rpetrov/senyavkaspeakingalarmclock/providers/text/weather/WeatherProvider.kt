@@ -2,8 +2,10 @@ package rpetrov.senyavkaspeakingalarmclock.providers.text.weather
 
 import android.Manifest
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
+import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
 import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
@@ -57,21 +59,26 @@ class WeatherProvider : BaseProvider, ITextProvider {
 
         val location = this.location
         result = if(location != null){
-            getWeatherByLocation(location.latitude, location.longitude)
+            getWeatherByLocation(location.latitude.toFloat(), location.longitude.toFloat())
         } else{
-            getWeatherByLocation(59.934788, 30.275356)
+            val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val lat = sp.getFloat("whether_lat", 0f)
+            val lon = sp.getFloat("whether_lon", 0f)
+
+            if(lat == 0f || lon == 0f)
+                return false
+
+            getWeatherByLocation(lat, lon)
         }
 
         return result != null
     }
 
 
-    private fun getWeatherByLocation(lat : Double, lon : Double): Result {
+    private fun getWeatherByLocation(lat : Float, lon : Float): Result {
         val gson: Gson = Gson()
         val param = String.format(PARAM_LOCATION, lat, lon)
         return gson.fromJson(BufferedReader(InputStreamReader(java.net.URL(String.format(URL, param)).openStream())), Result::class.java)
-
-
     }
 
     private fun getWeatherByAddress(city: String): Result {
