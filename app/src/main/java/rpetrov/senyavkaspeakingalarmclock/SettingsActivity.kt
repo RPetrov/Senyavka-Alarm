@@ -15,9 +15,6 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(intent.getIntExtra("LAYOUT", -1))
-
-        updateSummariesForDatabaseConfig()
-
     }
 
 
@@ -31,6 +28,11 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        updateSummariesForDatabaseConfig()
+    }
+
+    override fun onResume() {
+        super.onResume()
         updateSummariesForDatabaseConfig()
     }
 

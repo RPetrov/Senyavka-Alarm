@@ -1,19 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <org.osmdroid.views.MapView android:id="@+id/map"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
     <ImageButton
+        android:id="@+id/ic_center_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ic_center_map"
-        android:src="@drawable/ic_center_map"
         android:layout_gravity="bottom|right"
         android:layout_margin="10dp"
         android:background="#00ffffff"
-        android:cropToPadding="true" />
+        android:cropToPadding="true"
+        android:src="@drawable/ic_center_map" />
+
+    <LinearLayout
+        android:id="@+id/use_this_location_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dip"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/use_this_location"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            android:background="@color/colorPrimary"
+            android:text="Использовать эту локацию"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
 </FrameLayout>

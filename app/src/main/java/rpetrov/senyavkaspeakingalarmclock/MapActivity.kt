@@ -1,6 +1,8 @@
 package rpetrov.senyavkaspeakingalarmclock
 
 import android.Manifest
+import android.animation.ValueAnimator
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.location.Location
@@ -11,8 +13,12 @@ import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.AppCompatButton
 import android.support.v7.widget.AppCompatImageButton
+import android.support.v7.widget.AppCompatTextView
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import com.j256.ormlite.logger.LoggerFactory
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
@@ -22,8 +28,6 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.OverlayItem
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import rpetrov.senyavkaspeakingalarmclock.kotterknife.bindView
 
 
@@ -35,8 +39,11 @@ class MapActivity : AppCompatActivity() {
 
     val map: MapView by bindView(R.id.map)
     val btCenterMap: AppCompatImageButton by bindView(R.id.ic_center_map)
+    val useThisLocationLayout: ViewGroup by bindView(R.id.use_this_location_layout)
+    val useThisLocationText: AppCompatTextView by bindView(R.id.location)
+    val useThisLocationBtn: AppCompatButton by bindView(R.id.use_this_location)
 
-    var itemizedIconOverlay : ItemizedIconOverlay<OverlayItem>? = null
+    var itemizedIconOverlay: ItemizedIconOverlay<OverlayItem>? = null
 
     private var currentLocation: Location? = null
 
@@ -77,14 +84,14 @@ class MapActivity : AppCompatActivity() {
             controller.setZoom(9.5)
             controller.setCenter(GeoPoint(59.9343, 30.3351))
 
-            val mapEventsOverlay = MapEventsOverlay(object: MapEventsReceiver {
+            val mapEventsOverlay = MapEventsOverlay(object : MapEventsReceiver {
                 override fun longPressHelper(p: GeoPoint?): Boolean {
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
 
                 override fun singleTapConfirmedHelper(location: GeoPoint?): Boolean {
 
-                    if(location == null)
+                    if (location == null)
                         return false
 
                     val mItems = java.util.ArrayList<OverlayItem>()
@@ -103,6 +110,22 @@ class MapActivity : AppCompatActivity() {
                     itemizedIconOverlay = ItemizedIconOverlay(mItems, null, Application.instance())
                     map.overlays.add(itemizedIconOverlay)
                     map.invalidate()
+
+
+                    animateLocationLayout(true)
+
+                    useThisLocationText.text = "${location.latitude.toFloat()}, ${location.longitude.toFloat()}"
+
+                    useThisLocationBtn.setOnClickListener {
+                        val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                        sp.edit()
+                                .putFloat("whether_lat", location.latitude.toFloat())
+                                .putFloat("whether_lon", location.longitude.toFloat())
+                                .apply()
+
+                        finish()
+                    }
+
                     return true
                 }
             })
@@ -116,6 +139,31 @@ class MapActivity : AppCompatActivity() {
                 map.controller.animateTo(myPosition)
             }
         })
+    }
+
+    private fun animateLocationLayout(show: Boolean) {
+
+        val distance: Int = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 102f,
+                resources.displayMetrics).toInt()
+
+        if (useThisLocationLayout.height > 0 && show)
+            return
+
+        val anim = if (show) {
+            ValueAnimator.ofInt(0, distance)
+        } else {
+            ValueAnimator.ofInt(useThisLocationLayout.measuredHeight, 0)
+        }
+
+        anim.addUpdateListener {
+            val layoutParams = useThisLocationLayout.layoutParams
+            layoutParams.height = it.animatedValue as Int
+            useThisLocationLayout.layoutParams = layoutParams
+        }
+        anim.duration = 1000
+        anim.start()
+
     }
 
     private fun checkPermissions() {
