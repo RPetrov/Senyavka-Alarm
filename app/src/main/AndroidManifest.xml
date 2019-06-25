@@ -31,18 +31,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:showOnLockScreen="true"
-            android:screenOrientation="portrait"
-            android:name=".AlarmActivity"
-            android:label="@string/title_activity_alarm"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
             android:screenOrientation="portrait"
             android:name=".SettingsActivity"
             android:label="Настройки"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:screenOrientation="portrait"
