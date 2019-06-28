@@ -8,6 +8,10 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.view.WindowManager
 import org.jetbrains.anko.intentFor
+import android.support.v4.content.ContextCompat.startForegroundService
+import android.os.Build
+
+
 
 
 /**
@@ -26,7 +30,12 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
         val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         sp.edit().putBoolean("enabled", false).apply()
-        context.startService(context.intentFor<AlarmService>())
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(context.intentFor<AlarmService>())
+        } else {
+            context.startService(context.intentFor<AlarmService>())
+        }
 
 
     }
