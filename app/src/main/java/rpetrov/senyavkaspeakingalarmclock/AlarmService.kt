@@ -4,10 +4,8 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.os.Build
-import android.os.PowerManager
 import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
@@ -21,7 +19,6 @@ class AlarmService : Service() {
     val ONGOING_NOTIFICATION_ID = 1
 
     private var providerBuildTask: ProviderBuildTask? = null
-    private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onBind(intent: Intent) = null
 
@@ -46,20 +43,6 @@ class AlarmService : Service() {
                 else
                     Notification.Builder(this)
 
-        val icon = BitmapFactory.decodeResource(resources, R.drawable.alarm)
-
-//        val notification = notificationBuilder
-//                .setContentTitle(getText(R.string.app_name))
-//                .setContentText("TODO DATE")
-//                .setSmallIcon(R.drawable.alarm)
-//                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-//                .setContentIntent(pendingIntent)
-//                .setTicker(getText(R.string.app_name))
-//                //  .setStyle(Notification.BigTextStyle().bigText("Much longer text that cannot fit one line..."))
-//                .setPriority(Notification.PRIORITY_MAX)
-//                .addAction(-1, "Выключить",
-//                        pendingIntent)
-//                .build()
 
         val notification = notificationBuilder
                 .setContentTitle(getText(R.string.app_name))
@@ -91,25 +74,12 @@ class AlarmService : Service() {
 
     private fun clear() {
         providerBuildTask?.cancel()
-        wakeLock?.let {
-            if (it.isHeld)
-                wakeLock?.release()
-        }
     }
 
     private fun doSpeak() {
         val am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val vol = am.getStreamVolume(AudioManager.STREAM_ALARM)
         am.setStreamVolume(AudioManager.STREAM_ALARM, vol, 0)
-
-        val o = getSystemService(Context.POWER_SERVICE)
-        if (o is PowerManager) {
-            wakeLock = o.newWakeLock(PowerManager.FULL_WAKE_LOCK or
-                    PowerManager.ACQUIRE_CAUSES_WAKEUP or
-                    PowerManager.ON_AFTER_RELEASE, "sen_alarm:lock_alarm")
-
-            wakeLock?.acquire(1000 * 60 * 3) // 3 minutes
-        }
 
         val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putBoolean("enableAlarm.isChecked", false).apply()
@@ -121,12 +91,6 @@ class AlarmService : Service() {
 
     override fun onUnbind(intent: Intent?): Boolean {
         providerBuildTask?.cancel()
-        wakeLock?.let {
-            if (it.isHeld)
-                wakeLock?.release()
-        }
         return super.onUnbind(intent)
     }
-
-
 }
