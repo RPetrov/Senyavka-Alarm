@@ -216,7 +216,7 @@ class MainActivity : AppCompatActivity() {
         calendar.set(Calendar.MINUTE, minutes)
 
         if (calendar.before(now)) {
-            calendar.timeInMillis += 24 * 60 * 60 * 1000 // add one day
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
 
         setAlarm(alarmManager, calendar.timeInMillis)
