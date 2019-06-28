@@ -1,7 +1,9 @@
 package rpetrov.senyavkaspeakingalarmclock.providers.text
 
 import android.content.Context
-import com.ibm.icu.text.RuleBasedNumberFormat
+import android.provider.CalendarContract.Instances.DTSTART
+import android.util.Log
+import rpetrov.senyavkaspeakingalarmclock.providers.Utils
 
 
 /**
@@ -9,7 +11,7 @@ import com.ibm.icu.text.RuleBasedNumberFormat
  */
 class CalendarProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.providers.ITextProvider {
 
-    var count: Int = 0
+    var events: MutableList<String> = arrayListOf()
 
     constructor(context: Context) : super(context)
 
@@ -24,29 +26,42 @@ class CalendarProvider : BaseProvider, rpetrov.senyavkaspeakingalarmclock.provid
         val eventsUriBuilder = android.provider.CalendarContract.Instances.CONTENT_URI
                 .buildUpon()
         android.content.ContentUris.appendId(eventsUriBuilder, calendar.timeInMillis)
-        android.content.ContentUris.appendId(eventsUriBuilder, calendar.timeInMillis + 1000*60*60*23)
+        android.content.ContentUris.appendId(eventsUriBuilder, calendar.timeInMillis + 1000 * 60 * 60 * 23)
         val eventsUri = eventsUriBuilder.build()
-        var cursor: android.database.Cursor? = null
+
+        events = arrayListOf()
 
         try {
-            cursor = context.contentResolver.query(eventsUri, arrayOf("title"), null, null, android.provider.CalendarContract.Instances.DTSTART + " ASC")
-        } catch(e: Exception) {
+            context.contentResolver.query(
+                    eventsUri,
+                    arrayOf("title"),
+                    null,
+                    null,
+                    "$DTSTART ASC")
+                    .use {
+                        it?.let {
+                            while (it.moveToNext()) {
+                                events.add(it.getString(0))
+                            }
+                        }
+                    }
+
+        } catch (e: Exception) {
+            Log.w("CalendarProvider", e.message, e)
             return false
         }
 
-        count = cursor.count
-
-        cursor.close()
-
-        return count > 0
+        return events.size > 0
     }
 
     override fun getText(): String {
 
-       // val ruleBasedNumberFormat = com.ibm.icu.text.RuleBasedNumberFormat(java.util.Locale("ru"), RuleBasedNumberFormat.SPELLOUT)
+        // val ruleBasedNumberFormat = com.ibm.icu.text.RuleBasedNumberFormat(java.util.Locale("ru"), RuleBasedNumberFormat.SPELLOUT)
 
+        val preview = "На сегодня заплонировано " + events.size + Utils.getCorrectWordForDigit(events.size, " событие", " события", " событий", " событий")
+        val eventsString = events.joinToString { s -> s }
 
-        return "На сегодня заплонировано " + count + rpetrov.senyavkaspeakingalarmclock.providers.Utils.getCorrectWordForDigit(count, " событие", " события", " событий", " событий")
+        return "$preview\\. $eventsString"
     }
 
     override fun getConfigLayout(): Int {
