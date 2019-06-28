@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -214,10 +215,14 @@ class MainActivity : AppCompatActivity() {
         val now: Calendar = Calendar.getInstance()
         calendar.set(Calendar.HOUR_OF_DAY, hours)
         calendar.set(Calendar.MINUTE, minutes)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
 
         if (calendar.before(now)) {
             calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
+
+        Log.d("AlarmService", "time = ${calendar.time}")
 
         setAlarm(alarmManager, calendar.timeInMillis)
 
